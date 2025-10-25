@@ -20,7 +20,7 @@ const page = () => {
         <Label htmlFor="email" className="font-normal text-xs">
           Alamat email
         </Label>
-        <Input id="email"></Input>
+        <Input type="email" id="email"></Input>
       </div>
       <Button className="bg-[#FBC037] text-black w-full">
         Daftar dengan email

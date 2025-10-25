@@ -21,7 +21,7 @@ const page = () => {
         <Label htmlFor="email" className="font-normal text-xs">
           Alamat email
         </Label>
-        <Input id="email"></Input>
+        <Input type="email" id="email"></Input>
       </div>
       <Button className="bg-[#FBC037] text-black w-full">Kirim link</Button>
       <div className="flex w-full justify-center items-center gap-2 ">
@@ -30,12 +30,15 @@ const page = () => {
         <hr className="w-full border" />
       </div>
       <div className="flex flex-col gap-4">
-        <Button variant="outline" className="font-bold">
-          <div className="flex gap-2.5 items-center">
-            <KeyRound strokeWidth={3} />
-            <p>Masuk dengan kata sandi</p>
-          </div>
-        </Button>
+        <Link href="/login/with-password" className="w-full">
+          <Button variant="outline" className="font-bold w-full">
+            <div className="flex gap-2.5 items-center">
+              <KeyRound strokeWidth={3} />
+              <p>Masuk dengan kata sandi</p>
+            </div>
+          </Button>
+        </Link>
+
         <Button variant="outline" className="font-bold">
           <div className="flex gap-2.5 items-center">
             <Image src="/google.png" alt="google logo" width={24} height={24} />
