@@ -17,10 +17,55 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
+import { useFetch } from "@/hooks/useFetch";
+import { redirect } from "next/navigation";
+
+interface ICredentials {
+  email: string;
+  password: string;
+}
+
+interface IGetCredentials {
+  id: string;
+  email: string;
+  password: string;
+}
 
 const LoginPassword = () => {
   const [isPassShowed, setIsPassShowed] = useState(false);
+  const [credentials, setCredentials] = useState<ICredentials>({
+    email: "",
+    password: "",
+  });
+  const { data, fetchData: getData } = useFetch<IGetCredentials>();
+
+  const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setCredentials((prevCredentials) => ({
+      ...prevCredentials,
+      [name]: value,
+    }));
+  };
+
+  const handleLogin = () => {
+    getData("http://localhost:3001/auth/1", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (data) {
+      const dt = data as IGetCredentials;
+      if (
+        credentials.email === dt.email &&
+        credentials.password === dt.password
+      ) {
+        redirect("/admin");
+      } else {
+        console.log("salah ges");
+      }
+    }
+  };
 
   return (
     <>
@@ -37,7 +82,13 @@ const LoginPassword = () => {
         <Label htmlFor="email" className="font-normal text-xs">
           Alamat email
         </Label>
-        <Input type="email" id="email"></Input>
+        <Input
+          type="email"
+          id="email"
+          name="email"
+          value={credentials.email}
+          onChange={handleOnChange}
+        ></Input>
       </div>
       <div className="flex flex-col gap-2">
         <Label htmlFor="password" className="font-normal text-xs">
@@ -46,8 +97,11 @@ const LoginPassword = () => {
         <InputGroup>
           <InputGroupInput
             id="password"
+            name="password"
             type={isPassShowed ? "text" : "password"}
             className="pl-3!"
+            value={credentials.password}
+            onChange={handleOnChange}
           />
           <InputGroupAddon align="inline-end">
             <Tooltip>
@@ -70,7 +124,12 @@ const LoginPassword = () => {
           Lupa kata sandi?
         </Link>
       </div>
-      <Button className="bg-[#fbc037] text-black w-full">Masuk</Button>
+      <Button
+        className="bg-[#fbc037] text-black w-full"
+        onClick={() => handleLogin()}
+      >
+        Masuk
+      </Button>
       <div className="flex w-full justify-center items-center gap-2 ">
         <hr className="w-full border" />
         <p className="text-xs text-gray-400">or</p>
@@ -87,7 +146,13 @@ const LoginPassword = () => {
         </Link>
         <Button variant="outline" className="font-bold">
           <div className="flex gap-2.5 items-center">
-            <Image src="/google.png" alt="google logo" width={24} height={24} />
+            <Image
+              src="/google.png"
+              alt="google logo"
+              width={24}
+              height={24}
+              loading="lazy"
+            />
             <p>Masuk dengan Google</p>
           </div>
         </Button>

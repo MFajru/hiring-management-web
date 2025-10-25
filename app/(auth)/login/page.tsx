@@ -5,7 +5,7 @@ import Image from "next/image";
 import { KeyRound } from "lucide-react";
 import Link from "next/link";
 
-const page = () => {
+const Login = () => {
   return (
     <>
       <div className="flex flex-col gap-2">
@@ -41,7 +41,13 @@ const page = () => {
 
         <Button variant="outline" className="font-bold">
           <div className="flex gap-2.5 items-center">
-            <Image src="/google.png" alt="google logo" width={24} height={24} />
+            <Image
+              src="/google.png"
+              alt="google logo"
+              width={24}
+              height={24}
+              loading="lazy"
+            />
             <p>Masuk dengan Google</p>
           </div>
         </Button>
@@ -50,4 +56,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Login;
