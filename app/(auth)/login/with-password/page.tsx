@@ -125,7 +125,8 @@ const LoginPassword = () => {
         </Link>
       </div>
       <Button
-        className="bg-[#fbc037] text-black w-full"
+        variant={"secondary"}
+        className="text-black w-full"
         onClick={() => handleLogin()}
       >
         Masuk

@@ -64,7 +64,9 @@ const Register = () => {
           </InputGroupAddon>
         </InputGroup>
       </div>
-      <Button className="bg-[#FBC037] text-black w-full">Daftar</Button>
+      <Button variant={"secondary"} className="text-black w-full">
+        Daftar
+      </Button>
       <div className="flex w-full justify-center items-center gap-2 ">
         <hr className="w-full border" />
         <p className="text-xs text-gray-400">or</p>

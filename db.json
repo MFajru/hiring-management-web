@@ -3,12 +3,14 @@
     {
       "id": 1,
       "email": "admin@mail.com",
-      "password": "admin"
+      "password": "admin",
+      "role": "admin"
     },
     {
       "id": 2,
       "email": "applicant@mail.com",
-      "password": "applicant"
+      "password": "applicant",
+      "role": "applicant"
     }
   ]
 }
