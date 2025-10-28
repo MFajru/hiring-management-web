@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 const AuthLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="bg-[#FAFAFA] w-screen h-screen ">
-      <div className="flex flex-col gap-6 w-full h-full justify-center items-center">
+      <div className="flex flex-col gap-1 sm:gap-6 w-full h-full justify-center items-center">
         <div className="w-[350px] sm:w-[500px] ">
           <Image
             src="/rakamin.png"
