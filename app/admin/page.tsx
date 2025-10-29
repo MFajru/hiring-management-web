@@ -10,18 +10,6 @@ import NoJob from "./_components/no-job";
 import { useEffect, useState } from "react";
 import CardJob from "./_components/card-job";
 import { useTopbar } from "@/context/topbarContext";
-import { IBreadcrumb } from "@/types/components";
-
-const breadcrumbItem: IBreadcrumb[] = [
-  {
-    text: "Job list",
-    link: "/admin",
-  },
-  {
-    text: "Manage Candidate",
-    link: "/admin/manage-candidate",
-  },
-];
 
 const AdminHome = () => {
   const [jobList, setJobList] = useState<string[]>(["test"]);

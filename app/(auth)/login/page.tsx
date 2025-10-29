@@ -1,9 +1,8 @@
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { KeyRound } from "lucide-react";
 import Link from "next/link";
+import InputLabel from "@/components/customUI/input-with-label";
 
 const Login = () => {
   return (
@@ -17,12 +16,7 @@ const Login = () => {
           </Link>
         </p>
       </div>
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="email" className="font-normal text-xs">
-          Alamat email
-        </Label>
-        <Input type="email" id="email"></Input>
-      </div>
+      <InputLabel inputId="email" inputType="email" label="Alamat email" />
       <Button variant={"secondary"} className="text-black w-full">
         Kirim link
       </Button>

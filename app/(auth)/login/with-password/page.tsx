@@ -20,6 +20,7 @@ import {
 import { ChangeEvent, useState } from "react";
 import { useFetch } from "@/hooks/useFetch";
 import { redirect } from "next/navigation";
+import InputLabel from "@/components/customUI/input-with-label";
 
 interface ICredentials {
   email: string;
@@ -78,18 +79,13 @@ const LoginPassword = () => {
           </Link>
         </p>
       </div>
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="email" className="font-normal text-xs">
-          Alamat email
-        </Label>
-        <Input
-          type="email"
-          id="email"
-          name="email"
-          value={credentials.email}
-          onChange={handleOnChange}
-        ></Input>
-      </div>
+      <InputLabel
+        inputId="email"
+        inputType="email"
+        label="Alamat email"
+        value={credentials.email}
+        onChange={handleOnChange}
+      />
       <div className="flex flex-col gap-2">
         <Label htmlFor="password" className="font-normal text-xs">
           Kata sandi
