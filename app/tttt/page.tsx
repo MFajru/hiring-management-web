@@ -1,4 +1,15 @@
 import InputLabel from "@/components/customUI/input-with-label";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   InputGroup,
   InputGroupAddon,
@@ -102,6 +113,38 @@ const Tttt = () => {
                 </InputGroup>
               </div>
             </div>
+            <Card className="w-full">
+              <CardHeader>
+                <CardTitle className="text-sm">
+                  Minimum Profile Information Required
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex justify-between border-b border-gray-300 pb-4 items-center">
+                  <p className="text-sm">Full name</p>
+                  <div className="flex justify-between gap-2">
+                    <Button
+                      variant={"outline"}
+                      className="border-[#01959F] rounded-full text-[#01959F] hover:text-[#01959F]"
+                    >
+                      Mandatory
+                    </Button>
+                    <Button
+                      variant={"outline"}
+                      className="border-gray-400 rounded-full text-gray-600"
+                    >
+                      Optional
+                    </Button>
+                    <Button
+                      variant={"outline"}
+                      className="border-gray-400 rounded-full text-gray-600"
+                    >
+                      Off
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </form>
