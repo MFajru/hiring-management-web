@@ -10,6 +10,17 @@ import NoJob from "./_components/no-job";
 import { useEffect, useState } from "react";
 import CardJob from "./_components/card-job";
 import { useTopbar } from "@/context/topbarContext";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import CreateJobDialog from "./_components/create-job-dialog";
 
 const AdminHome = () => {
   const [jobList, setJobList] = useState<string[]>(["test"]);
@@ -43,14 +54,31 @@ const AdminHome = () => {
       <div className="w-full sm:w-1/4">
         <div className="bg-[url(/whiteboard.jpg)] bg-cover rounded-2xl relative">
           <div className="bg-black opacity-70 absolute z-0 w-full h-full rounded-2xl"></div>
-          <div className="p-6 flex flex-col gap-6 relative z-10 font-bold ">
+          <div className="p-6 flex flex-col relative z-10 font-bold ">
             <div className="text-white flex flex-col gap-1">
               <h4 className="text-lg">Recruit the best candidates</h4>
               <p className="text-sm">Create jobs, invite, and hire with ease</p>
             </div>
-            <Button id="createJob" name="createJob">
-              Create a new job
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button id="createJob" name="createJob" className="mt-6">
+                  Create a new job
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-1/2">
+                <DialogHeader>
+                  <DialogTitle>Job Opening</DialogTitle>
+                </DialogHeader>
+                <div className="max-h-[350px] lg:max-h-[500px] overflow-auto scrollbar-hidden">
+                  <CreateJobDialog />
+                </div>
+                <DialogFooter>
+                  <div className="w-full flex justify-end mt-2">
+                    <Button type="submit">Publish Job</Button>
+                  </div>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </div>
