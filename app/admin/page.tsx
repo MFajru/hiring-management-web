@@ -7,29 +7,48 @@ import {
 } from "@/components/ui/input-group";
 import { Search } from "lucide-react";
 import NoJob from "./_components/no-job";
-import { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import CardJob from "./_components/card-job";
 import { useTopbar } from "@/context/topbarContext";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import CreateJobDialog from "./_components/create-job-dialog";
+import { useFetch } from "@/hooks/useFetch";
+import { useRouter } from "next/navigation";
+
+type TJobList = {
+  id: number;
+  jobName: string;
+  status: string;
+  minimumSalary: number;
+  maximumSalary: number;
+  createdDate: string;
+};
 
 const AdminHome = () => {
-  const [jobList, setJobList] = useState<string[]>(["test"]);
+  const route = useRouter();
+  const { data: jobList, fetchData: getJobs } = useFetch<TJobList[]>();
   const { setType, setTitle } = useTopbar();
 
   useEffect(() => {
     setType("title");
     setTitle("Job List");
   }, [setTitle, setType]);
+
+  useEffect(() => {
+    getJobs("http://localhost:3001/jobPosting", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <>
       <div className="w-full sm:w-3/4">
@@ -43,13 +62,30 @@ const AdminHome = () => {
             <Search color="#01959F" />
           </InputGroupAddon>
         </InputGroup>
-        <div className="flex flex-col items-center gap-4 w-full py-4">
-          {jobList.length === 0 ? (
-            <NoJob />
-          ) : (
-            jobList.map((item) => <CardJob key={item}></CardJob>)
-          )}
-        </div>
+        {jobList ? (
+          <div className="flex flex-col items-center gap-4 w-full py-4">
+            {jobList.length === 0 ? (
+              <NoJob />
+            ) : (
+              (jobList as TJobList[]).map((job) => (
+                <React.Fragment key={job.id}>
+                  <CardJob
+                    jobName={job.jobName}
+                    status={job.status}
+                    minSalary={job.minimumSalary}
+                    maxSalary={job.maximumSalary}
+                    createdDate={job.createdDate}
+                    handleManageJob={() =>
+                      route.push(`/admin/manage-job/${job.id}`)
+                    }
+                  />
+                </React.Fragment>
+              ))
+            )}
+          </div>
+        ) : (
+          <p>Fetch error</p>
+        )}
       </div>
       <div className="w-full sm:w-1/4">
         <div className="bg-[url(/whiteboard.jpg)] bg-cover rounded-2xl relative">

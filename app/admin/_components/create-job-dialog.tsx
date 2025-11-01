@@ -148,9 +148,6 @@ const CreateJobDialog = () => {
               </InputGroupAddon>
             </InputGroup>
           </div>
-          <div className="flex items-end h-full">
-            <p className="text-gray-400 h-full">-</p>
-          </div>
           <div className="flex flex-col gap-2 w-full">
             <Label className="text-xs">Maximum Estimated Salary</Label>
             <InputGroup>
@@ -179,7 +176,9 @@ const CreateJobDialog = () => {
           {profileInfoReq.map((item: TProfileInfoReq, idx: number) => (
             <div
               key={item.name}
-              className="flex justify-between border-b border-gray-300 py-4 items-center"
+              className={`flex justify-between ${
+                idx !== profileInfoReq.length - 1 && "border-b border-gray-300"
+              }  py-4 items-center`}
             >
               <p className="text-sm">{item.name}</p>
               <div className="flex justify-between gap-2">

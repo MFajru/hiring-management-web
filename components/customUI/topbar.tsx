@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   Breadcrumb,
@@ -10,6 +9,7 @@ import {
 } from "../ui/breadcrumb";
 import { IBreadcrumb } from "@/types/components";
 import { useTopbar } from "@/context/topbarContext";
+import React from "react";
 
 interface ITopbar {
   src?: string;
@@ -28,12 +28,14 @@ const Topbar = ({ src, fallback }: ITopbar) => {
             <BreadcrumbList>
               {breadcrumb.map((item: IBreadcrumb, idx) => {
                 return (
-                  <BreadcrumbItem key={idx}>
-                    <BreadcrumbLink asChild>
-                      <Link href={item.link}>{item.text}</Link>
-                    </BreadcrumbLink>
+                  <React.Fragment key={idx}>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink href={item.link} key={idx}>
+                        {item.text}
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
                     {idx != breadcrumb.length - 1 && <BreadcrumbSeparator />}
-                  </BreadcrumbItem>
+                  </React.Fragment>
                 );
               })}
             </BreadcrumbList>

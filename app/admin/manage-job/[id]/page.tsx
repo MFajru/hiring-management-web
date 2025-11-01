@@ -129,6 +129,7 @@ const ManageJob = () => {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
+  
   const table = useReactTable({
     data,
     columns,

@@ -12,5 +12,114 @@
       "password": "applicant",
       "role": "applicant"
     }
+  ],
+
+  "jobPosting": [
+    {
+      "id": 1,
+      "jobName": "Frontend Developer",
+      "jobType": "Full-time",
+      "jobDesc": "A frontend developer who can create a website in 7 days",
+      "numOfCandidate": 20,
+      "minimumSalary": 7000000,
+      "maximumSalary": 8000000,
+      "createdDate": "2025-11-24T10:15:00Z",
+      "status": "active",
+      "requiredInfo": [
+        {
+          "name": "Full Name",
+          "reqStatus": "mandatory",
+          "isMustMandatory": true
+        },
+        {
+          "name": "Photo Profile",
+          "reqStatus": "mandatory",
+          "isMustMandatory": true
+        },
+        {
+          "name": "Gender",
+          "reqStatus": "mandatory",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Domicile",
+          "reqStatus": "mandatory",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Email",
+          "reqStatus": "mandatory",
+          "isMustMandatory": true
+        },
+        {
+          "name": "Phone Number",
+          "reqStatus": "mandatory",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Linkedin Link",
+          "reqStatus": "mandatory",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Date of Birth",
+          "reqStatus": "mandatory",
+          "isMustMandatory": false
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "jobName": "Backend Developer",
+      "jobType": "Full-time",
+      "jobDesc": "A backend developer who can create a GRAPHQL API in 7 days",
+      "numOfCandidate": 20,
+      "minimumSalary": 7000000,
+      "maximumSalary": 8000000,
+      "createdDate": "2025-11-24T10:15:00Z",
+      "status": "active",
+      "requiredInfo": [
+        {
+          "name": "Full Name",
+          "reqStatus": "mandatory",
+          "isMustMandatory": true
+        },
+        {
+          "name": "Photo Profile",
+          "reqStatus": "mandatory",
+          "isMustMandatory": true
+        },
+        {
+          "name": "Gender",
+          "reqStatus": "mandatory",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Domicile",
+          "reqStatus": "mandatory",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Email",
+          "reqStatus": "mandatory",
+          "isMustMandatory": true
+        },
+        {
+          "name": "Phone Number",
+          "reqStatus": "mandatory",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Linkedin Link",
+          "reqStatus": "mandatory",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Date of Birth",
+          "reqStatus": "mandatory",
+          "isMustMandatory": false
+        }
+      ]
+    }
   ]
 }
