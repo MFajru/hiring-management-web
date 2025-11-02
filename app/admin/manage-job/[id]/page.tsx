@@ -23,36 +23,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TManageJob } from "@/types/components";
+import { TCandidate } from "@/types/components";
 import Link from "next/link";
 import { useTopbar } from "@/context/topbarContext";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
+import { useFetch } from "@/hooks/useFetch";
 
-const data: TManageJob[] = [
-  {
-    id: 1,
-    fullName: "John",
-    email: "john@mail.com",
-    phone: "0878641237",
-    dob: "2000-10-24T10:15:00Z",
-    domicile: "jakarta",
-    gender: "male",
-    linkedin: "https://linkedin.com",
-  },
-  {
-    id: 2,
-    fullName: "Doe",
-    email: "doe@mail.com",
-    phone: "0878641237",
-    dob: "2000-10-24T10:15:00Z",
-    domicile: "jakarta",
-    gender: "male",
-    linkedin: "https://linkedin.com",
-  },
-];
-
-export const columns: ColumnDef<TManageJob>[] = [
+export const columns: ColumnDef<TCandidate>[] = [
   {
     accessorKey: "fullName",
     header: ({ table }) => (
@@ -122,17 +100,20 @@ export const columns: ColumnDef<TManageJob>[] = [
 ];
 
 const ManageJob = () => {
-  const pathname = usePathname();
-  const lastPath = pathname.split("/")[pathname.split("/").length - 1];
-  const { setType, setBreadcrumbItem } = useTopbar();
+  const urlParams = useParams();
+  const searchParams = useSearchParams();
+  const title = searchParams.get("title");
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
-  
+  const { data: candidates, fetchData } = useFetch<TCandidate[]>();
+
+  const { setType, setBreadcrumbItem } = useTopbar();
+
   const table = useReactTable({
-    data,
-    columns,
+    data: (candidates as TCandidate[]) || [],
+    columns: columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -146,16 +127,26 @@ const ManageJob = () => {
   });
 
   useEffect(() => {
+    fetchData(`http://localhost:3001/candidates?jobId=${urlParams.id}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+  }, []);
+
+  useEffect(() => {
     setType("breadcrumb");
     setBreadcrumbItem([
       { text: "Job list", link: "/admin" },
-      { text: "Manage Candidate", link: `/admin/manage-job/${lastPath}` },
+      {
+        text: "Manage Candidate",
+        link: `/admin/manage-job/${urlParams.id}`,
+      },
     ]);
-  }, [lastPath, setBreadcrumbItem, setType]);
+  }, [urlParams, setBreadcrumbItem, setType]);
 
   return (
     <div className="w-full">
-      <h3 className="font-bold text-lg">Front End Developer</h3>
+      <h3 className="font-bold text-lg capitalize">{title}</h3>
       <div className="overflow-hidden rounded-md border mt-6">
         <Table>
           <TableHeader>

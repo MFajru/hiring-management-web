@@ -121,5 +121,74 @@
         }
       ]
     }
+  ],
+
+  "candidates": [
+    {
+      "id": 1,
+      "fullName": "John",
+      "email": "john@mail.com",
+      "phone": "087267282920",
+      "dob": "2000-11-24",
+      "domicile": "jakarta",
+      "gender": "male",
+      "linkedin": "https://linkedin.com/in/john",
+      "jobId": 1
+    },
+    {
+      "id": 2,
+      "fullName": "Doe",
+      "email": "doe@mail.com",
+      "phone": "087267282920",
+      "dob": "2000-11-24",
+      "domicile": "jakarta",
+      "gender": "male",
+      "linkedin": "https://linkedin.com/in/john",
+      "jobId": 1
+    },
+    {
+      "id": 3,
+      "fullName": "mia",
+      "email": "mia@mail.com",
+      "phone": "087267282920",
+      "dob": "2000-11-24",
+      "domicile": "jakarta",
+      "gender": "male",
+      "linkedin": "https://linkedin.com/in/john",
+      "jobId": 1
+    },
+    {
+      "id": 4,
+      "fullName": "Juki",
+      "email": "john@mail.com",
+      "phone": "087267282920",
+      "dob": "2000-11-24",
+      "domicile": "jakarta",
+      "gender": "male",
+      "linkedin": "https://linkedin.com/in/john",
+      "jobId": 2
+    },
+    {
+      "id": 5,
+      "fullName": "Joko",
+      "email": "doe@mail.com",
+      "phone": "087267282920",
+      "dob": "2000-11-24",
+      "domicile": "jakarta",
+      "gender": "male",
+      "linkedin": "https://linkedin.com/in/john",
+      "jobId": 2
+    },
+    {
+      "id": 6,
+      "fullName": "maimunah",
+      "email": "mia@mail.com",
+      "phone": "087267282920",
+      "dob": "2000-11-24",
+      "domicile": "jakarta",
+      "gender": "male",
+      "linkedin": "https://linkedin.com/in/john",
+      "jobId": 2
+    }
   ]
 }

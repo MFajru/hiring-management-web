@@ -76,7 +76,7 @@ const AdminHome = () => {
                     maxSalary={job.maximumSalary}
                     createdDate={job.createdDate}
                     handleManageJob={() =>
-                      route.push(`/admin/manage-job/${job.id}`)
+                      route.push(`/admin/manage-job/${job.id}?title=${job.jobName}`)
                     }
                   />
                 </React.Fragment>

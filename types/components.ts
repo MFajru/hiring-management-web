@@ -3,7 +3,7 @@ export interface IBreadcrumb {
   link: string;
 }
 
-export type TManageJob = {
+export type TCandidate = {
   id: number;
   fullName: string;
   email: string;
@@ -12,4 +12,5 @@ export type TManageJob = {
   domicile: string;
   gender: string;
   linkedin: string;
+  jobId: number;
 };
