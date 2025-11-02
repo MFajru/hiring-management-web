@@ -1,22 +1,21 @@
 {
   "auth": [
     {
-      "id": 1,
+      "id": "1",
       "email": "admin@mail.com",
       "password": "admin",
       "role": "admin"
     },
     {
-      "id": 2,
+      "id": "2",
       "email": "applicant@mail.com",
       "password": "applicant",
       "role": "applicant"
     }
   ],
-
   "jobPosting": [
     {
-      "id": 1,
+      "id": "1",
       "jobName": "Frontend Developer",
       "jobType": "Full-time",
       "jobDesc": "A frontend developer who can create a website in 7 days",
@@ -69,7 +68,7 @@
       ]
     },
     {
-      "id": 2,
+      "id": "2",
       "jobName": "Backend Developer",
       "jobType": "Full-time",
       "jobDesc": "A backend developer who can create a GRAPHQL API in 7 days",
@@ -120,9 +119,167 @@
           "isMustMandatory": false
         }
       ]
+    },
+    {
+      "id": "7f1d",
+      "jobName": "test job",
+      "jobType": "internship",
+      "jobDesc": "test job",
+      "numOfCandidate": 10,
+      "minimumSalary": 5000000,
+      "maximumSalary": 900000,
+      "createdDate": "",
+      "status": "",
+      "requiredInfo": [
+        {
+          "name": "Full Name",
+          "reqStatus": "mandatory",
+          "isMustMandatory": true
+        },
+        {
+          "name": "Photo Profile",
+          "reqStatus": "mandatory",
+          "isMustMandatory": true
+        },
+        {
+          "name": "Gender",
+          "reqStatus": "optional",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Domicile",
+          "reqStatus": "optional",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Email",
+          "reqStatus": "mandatory",
+          "isMustMandatory": true
+        },
+        {
+          "name": "Phone Number",
+          "reqStatus": "mandatory",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Linkedin Link",
+          "reqStatus": "mandatory",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Date of Birth",
+          "reqStatus": "optional",
+          "isMustMandatory": false
+        }
+      ]
+    },
+    {
+      "id": "5163",
+      "jobName": "sada",
+      "jobType": "internship",
+      "jobDesc": "www",
+      "numOfCandidate": 2,
+      "minimumSalary": 3,
+      "maximumSalary": 1,
+      "createdDate": "",
+      "status": "",
+      "requiredInfo": [
+        {
+          "name": "Full Name",
+          "reqStatus": "mandatory",
+          "isMustMandatory": true
+        },
+        {
+          "name": "Photo Profile",
+          "reqStatus": "mandatory",
+          "isMustMandatory": true
+        },
+        {
+          "name": "Gender",
+          "reqStatus": "optional",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Domicile",
+          "reqStatus": "optional",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Email",
+          "reqStatus": "mandatory",
+          "isMustMandatory": true
+        },
+        {
+          "name": "Phone Number",
+          "reqStatus": "off",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Linkedin Link",
+          "reqStatus": "off",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Date of Birth",
+          "reqStatus": "off",
+          "isMustMandatory": false
+        }
+      ]
+    },
+    {
+      "id": "abed",
+      "jobName": "test",
+      "jobType": "part-time",
+      "jobDesc": "123 test",
+      "numOfCandidate": 10,
+      "minimumSalary": 89,
+      "maximumSalary": 990,
+      "createdDate": "",
+      "status": "",
+      "requiredInfo": [
+        {
+          "name": "Full Name",
+          "reqStatus": "mandatory",
+          "isMustMandatory": true
+        },
+        {
+          "name": "Photo Profile",
+          "reqStatus": "mandatory",
+          "isMustMandatory": true
+        },
+        {
+          "name": "Gender",
+          "reqStatus": "mandatory",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Domicile",
+          "reqStatus": "mandatory",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Email",
+          "reqStatus": "mandatory",
+          "isMustMandatory": true
+        },
+        {
+          "name": "Phone Number",
+          "reqStatus": "mandatory",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Linkedin Link",
+          "reqStatus": "off",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Date of Birth",
+          "reqStatus": "off",
+          "isMustMandatory": false
+        }
+      ]
     }
   ],
-
   "candidates": [
     {
       "id": 1,
@@ -133,7 +290,7 @@
       "domicile": "jakarta",
       "gender": "male",
       "linkedin": "https://linkedin.com/in/john",
-      "jobId": 1
+      "jobId": "1"
     },
     {
       "id": 2,
@@ -144,7 +301,7 @@
       "domicile": "jakarta",
       "gender": "male",
       "linkedin": "https://linkedin.com/in/john",
-      "jobId": 1
+      "jobId": "1"
     },
     {
       "id": 3,
@@ -155,7 +312,7 @@
       "domicile": "jakarta",
       "gender": "male",
       "linkedin": "https://linkedin.com/in/john",
-      "jobId": 1
+      "jobId": "1"
     },
     {
       "id": 4,
@@ -166,7 +323,7 @@
       "domicile": "jakarta",
       "gender": "male",
       "linkedin": "https://linkedin.com/in/john",
-      "jobId": 2
+      "jobId": "2"
     },
     {
       "id": 5,
@@ -177,7 +334,7 @@
       "domicile": "jakarta",
       "gender": "male",
       "linkedin": "https://linkedin.com/in/john",
-      "jobId": 2
+      "jobId": "2"
     },
     {
       "id": 6,
@@ -188,7 +345,7 @@
       "domicile": "jakarta",
       "gender": "male",
       "linkedin": "https://linkedin.com/in/john",
-      "jobId": 2
+      "jobId": "2"
     }
   ]
 }

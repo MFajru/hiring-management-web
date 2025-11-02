@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/input-group";
 import { Search } from "lucide-react";
 import NoJob from "./_components/no-job";
-import React, { useEffect } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import CardJob from "./_components/card-job";
 import { useTopbar } from "@/context/topbarContext";
 import {
@@ -22,19 +22,146 @@ import CreateJobDialog from "./_components/create-job-dialog";
 import { useFetch } from "@/hooks/useFetch";
 import { useRouter } from "next/navigation";
 
-type TJobList = {
+export type TProfileInfoReq = {
+  name: string;
+  reqStatus: "mandatory" | "optional" | "off" | "";
+  isMustMandatory: boolean;
+};
+
+export type TJobList = {
   id: number;
   jobName: string;
-  status: string;
+  jobType: string;
+  jobDesc: string;
+  numOfCandidate: number;
   minimumSalary: number;
   maximumSalary: number;
   createdDate: string;
+  status: string;
+  requiredInfo: TProfileInfoReq[];
 };
 
 const AdminHome = () => {
   const route = useRouter();
-  const { data: jobList, fetchData: getJobs } = useFetch<TJobList[]>();
+  const { data: jobList, fetchData: getJobs } = useFetch<Partial<TJobList[]>>();
+  const { data: postResponse, fetchData: postJobs } =
+    useFetch<Partial<TJobList>>();
+
   const { setType, setTitle } = useTopbar();
+
+  const [createJobData, setCreateJobData] = useState<Partial<TJobList>>({
+    jobName: "",
+    jobType: "",
+    jobDesc: "",
+    numOfCandidate: 0,
+    minimumSalary: 0,
+    maximumSalary: 0,
+    createdDate: "",
+    status: "",
+    requiredInfo: [
+      {
+        name: "Full Name",
+        reqStatus: "mandatory",
+        isMustMandatory: true,
+      },
+      {
+        name: "Photo Profile",
+        reqStatus: "mandatory",
+        isMustMandatory: true,
+      },
+      {
+        name: "Gender",
+        reqStatus: "",
+        isMustMandatory: false,
+      },
+      {
+        name: "Domicile",
+        reqStatus: "",
+        isMustMandatory: false,
+      },
+      {
+        name: "Email",
+        reqStatus: "mandatory",
+        isMustMandatory: true,
+      },
+      {
+        name: "Phone Number",
+        reqStatus: "",
+        isMustMandatory: false,
+      },
+      {
+        name: "Linkedin Link",
+        reqStatus: "",
+        isMustMandatory: false,
+      },
+      {
+        name: "Date of Birth",
+        reqStatus: "",
+        isMustMandatory: false,
+      },
+    ],
+  });
+
+  const handleOnChange = (e: any) => {
+    // select = e, other e.target.value
+
+    if (typeof e === "string") {
+      setCreateJobData((prevValue) => ({
+        ...prevValue,
+        jobType: e,
+      }));
+      return;
+    }
+
+    const key = e.target.name;
+    let value = e.target.value;
+
+    if (
+      (key === "minimumSalary" ||
+        key === "maximumSalary" ||
+        key === "numOfCandidate") &&
+      value
+    ) {
+      value = parseInt(value);
+    } else if (
+      (key === "minimumSalary" ||
+        key === "maximumSalary" ||
+        key === "numOfCandidate") &&
+      !value
+    ) {
+      value = parseInt("0");
+    }
+    setCreateJobData((prevValue) => ({
+      ...prevValue,
+      [key]: value,
+    }));
+  };
+
+  const handleButtonProfile = (
+    param: "mandatory" | "optional" | "off",
+    idx: number
+  ) => {
+    if (createJobData.requiredInfo) {
+      const cp = [...createJobData.requiredInfo];
+      cp[idx] = { ...cp[idx], reqStatus: param };
+      setCreateJobData((prevValue) => ({
+        ...prevValue,
+        requiredInfo: cp,
+      }));
+    }
+  };
+  // need to think how to close dialog after submit
+  const handleOnSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    postJobs("http://localhost:3001/jobPosting", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(createJobData),
+    });
+    route.replace("/admin");
+  };
 
   useEffect(() => {
     setType("title");
@@ -48,6 +175,10 @@ const AdminHome = () => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    console.log(createJobData);
+  });
 
   return (
     <>
@@ -64,7 +195,7 @@ const AdminHome = () => {
         </InputGroup>
         {jobList ? (
           <div className="flex flex-col items-center gap-4 w-full py-4">
-            {jobList.length === 0 ? (
+            {(jobList as TJobList[]).length === 0 ? (
               <NoJob />
             ) : (
               (jobList as TJobList[]).map((job) => (
@@ -76,7 +207,9 @@ const AdminHome = () => {
                     maxSalary={job.maximumSalary}
                     createdDate={job.createdDate}
                     handleManageJob={() =>
-                      route.push(`/admin/manage-job/${job.id}?title=${job.jobName}`)
+                      route.push(
+                        `/admin/manage-job/${job.id}?title=${job.jobName}`
+                      )
                     }
                   />
                 </React.Fragment>
@@ -101,18 +234,27 @@ const AdminHome = () => {
                   Create a new job
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-1/2">
+              <DialogContent
+                className="sm:max-w-1/2"
+                aria-describedby="create job dialog"
+              >
                 <DialogHeader>
                   <DialogTitle>Job Opening</DialogTitle>
                 </DialogHeader>
-                <div className="max-h-[350px] lg:max-h-[500px] overflow-auto scrollbar-hidden">
-                  <CreateJobDialog />
-                </div>
-                <DialogFooter>
-                  <div className="w-full flex justify-end mt-2">
-                    <Button type="submit">Publish Job</Button>
+                <form onSubmit={handleOnSubmit} className="flex flex-col gap-4">
+                  <div className="max-h-[350px] lg:max-h-[500px] overflow-auto scrollbar-hidden">
+                    <CreateJobDialog
+                      jobData={createJobData}
+                      handleOnChange={handleOnChange}
+                      handleButtonProfile={handleButtonProfile}
+                    />
                   </div>
-                </DialogFooter>
+                  <DialogFooter>
+                    <div className="w-full flex justify-end mt-2">
+                      <Button type="submit">Publish Job</Button>
+                    </div>
+                  </DialogFooter>
+                </form>
               </DialogContent>
             </Dialog>
           </div>

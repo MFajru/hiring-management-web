@@ -19,89 +19,45 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { TJobList, TProfileInfoReq } from "../page";
 
-type TProfileInfoReq = {
-  name: string;
-  reqStatus: "mandatory" | "optional" | "off";
-  isMustMandatory: boolean;
-};
-
-const CreateJobDialog = () => {
-  const [profileInfoReq, setProfileInfoReq] = useState<TProfileInfoReq[]>([
-    {
-      name: "Full Name",
-      reqStatus: "mandatory",
-      isMustMandatory: true,
-    },
-    {
-      name: "Photo Profile",
-      reqStatus: "mandatory",
-      isMustMandatory: true,
-    },
-    {
-      name: "Gender",
-      reqStatus: "mandatory",
-      isMustMandatory: false,
-    },
-    {
-      name: "Domicile",
-      reqStatus: "mandatory",
-      isMustMandatory: false,
-    },
-    {
-      name: "Email",
-      reqStatus: "mandatory",
-      isMustMandatory: true,
-    },
-    {
-      name: "Phone Number",
-      reqStatus: "mandatory",
-      isMustMandatory: false,
-    },
-    {
-      name: "Linkedin Link",
-      reqStatus: "mandatory",
-      isMustMandatory: false,
-    },
-    {
-      name: "Date of Birth",
-      reqStatus: "mandatory",
-      isMustMandatory: false,
-    },
-  ]);
-
-  const handleButtonProfile = (
+const CreateJobDialog = ({
+  jobData,
+  handleOnChange,
+  handleButtonProfile,
+}: {
+  jobData: Partial<TJobList>;
+  handleOnChange: (e: any) => void;
+  handleButtonProfile: (
     param: "mandatory" | "optional" | "off",
     idx: number
-  ) => {
-    const cp = [...profileInfoReq];
-    cp[idx] = { ...cp[idx], reqStatus: param };
-    setProfileInfoReq(cp);
-  };
-
+  ) => void;
+}) => {
   return (
-    <form action="" className="flex flex-col gap-4">
+    <>
       <InputLabel
         inputId="jobName"
         inputType="text"
+        name="jobName"
         label="Job Name"
         placeholder="Ex. Front End Engineer"
+        value={jobData.jobName}
+        onChange={handleOnChange}
       />
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="jobType" className="text-xs font-normal">
           Job Type
         </Label>
-        <Select>
+        <Select onValueChange={handleOnChange} value={jobData.jobType}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select job type" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem value="fulltime">Full-time</SelectItem>
+              <SelectItem value="full-time">Full-time</SelectItem>
               <SelectItem value="contract">Contract</SelectItem>
-              <SelectItem value="parttime">Part-time</SelectItem>
+              <SelectItem value="part-time">Part-time</SelectItem>
               <SelectItem value="internship">Internship</SelectItem>
               <SelectItem value="freelance">Freelance</SelectItem>
             </SelectGroup>
@@ -116,7 +72,9 @@ const CreateJobDialog = () => {
         <Textarea
           placeholder="Ex. Successfully gaining more customers"
           id="jobdesc"
-          name="jobdesc"
+          name="jobDesc"
+          value={jobData.jobDesc}
+          onChange={handleOnChange}
         />
       </div>
 
@@ -125,6 +83,9 @@ const CreateJobDialog = () => {
         inputType="text"
         label="Number of Candidate Needed"
         placeholder="Ex. 2"
+        name="numOfCandidate"
+        value={jobData.numOfCandidate === 0 ? "" : jobData.numOfCandidate}
+        onChange={handleOnChange}
       />
 
       <div className="w-full flex flex-col gap-4">
@@ -138,8 +99,11 @@ const CreateJobDialog = () => {
               <InputGroupInput
                 id="minimumSalary"
                 name="minimumSalary"
+                type="text"
                 placeholder="7.000.000"
                 className="pl-1!"
+                value={jobData.minimumSalary === 0 ? "" : jobData.minimumSalary}
+                onChange={handleOnChange}
               />
               <InputGroupAddon>
                 <InputGroupText className="font-bold text-black">
@@ -154,8 +118,11 @@ const CreateJobDialog = () => {
               <InputGroupInput
                 id="maximumSalary"
                 name="maximumSalary"
+                type="text"
                 placeholder="8.000.000"
                 className="pl-1!"
+                value={jobData.maximumSalary === 0 ? "" : jobData.maximumSalary}
+                onChange={handleOnChange}
               />
               <InputGroupAddon>
                 <InputGroupText className="font-bold text-black">
@@ -173,59 +140,62 @@ const CreateJobDialog = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {profileInfoReq.map((item: TProfileInfoReq, idx: number) => (
-            <div
-              key={item.name}
-              className={`flex justify-between ${
-                idx !== profileInfoReq.length - 1 && "border-b border-gray-300"
-              }  py-4 items-center`}
-            >
-              <p className="text-sm">{item.name}</p>
-              <div className="flex justify-between gap-2">
-                <Button
-                  type="button"
-                  variant={"outline"}
-                  className={`${
-                    item.reqStatus === "mandatory"
-                      ? "border-[#01959F] text-[#01959F] hover:text-[#01959F]"
-                      : "border-gray-400 rounded-full text-gray-600"
-                  } rounded-full`}
-                  onClick={() => handleButtonProfile("mandatory", idx)}
-                >
-                  Mandatory
-                </Button>
-                <Button
-                  type="button"
-                  disabled={item.isMustMandatory}
-                  variant={"outline"}
-                  className={`${
-                    item.reqStatus === "optional"
-                      ? "border-[#01959F] text-[#01959F] hover:text-[#01959F]"
-                      : "border-gray-400 rounded-full text-gray-600"
-                  } rounded-full`}
-                  onClick={() => handleButtonProfile("optional", idx)}
-                >
-                  Optional
-                </Button>
-                <Button
-                  type="button"
-                  disabled={item.isMustMandatory}
-                  variant={"outline"}
-                  className={`${
-                    item.reqStatus === "off"
-                      ? "border-[#01959F] text-[#01959F] hover:text-[#01959F]"
-                      : "border-gray-400 rounded-full text-gray-600"
-                  } rounded-full`}
-                  onClick={() => handleButtonProfile("off", idx)}
-                >
-                  Off
-                </Button>
+          {jobData.requiredInfo &&
+            jobData.requiredInfo.map((item: TProfileInfoReq, idx: number) => (
+              <div
+                key={item.name}
+                className={`flex justify-between ${
+                  jobData.requiredInfo &&
+                  idx !== jobData.requiredInfo.length - 1 &&
+                  "border-b border-gray-300"
+                }  py-4 items-center`}
+              >
+                <p className="text-sm">{item.name}</p>
+                <div className="flex justify-between gap-2">
+                  <Button
+                    type="button"
+                    variant={"outline"}
+                    className={`${
+                      item.reqStatus === "mandatory"
+                        ? "border-[#01959F] text-[#01959F] hover:text-[#01959F]"
+                        : "border-gray-400 rounded-full text-gray-600"
+                    } rounded-full`}
+                    onClick={() => handleButtonProfile("mandatory", idx)}
+                  >
+                    Mandatory
+                  </Button>
+                  <Button
+                    type="button"
+                    disabled={item.isMustMandatory}
+                    variant={"outline"}
+                    className={`${
+                      item.reqStatus === "optional"
+                        ? "border-[#01959F] text-[#01959F] hover:text-[#01959F]"
+                        : "border-gray-400 rounded-full text-gray-600"
+                    } rounded-full`}
+                    onClick={() => handleButtonProfile("optional", idx)}
+                  >
+                    Optional
+                  </Button>
+                  <Button
+                    type="button"
+                    disabled={item.isMustMandatory}
+                    variant={"outline"}
+                    className={`${
+                      item.reqStatus === "off"
+                        ? "border-[#01959F] text-[#01959F] hover:text-[#01959F]"
+                        : "border-gray-400 rounded-full text-gray-600"
+                    } rounded-full`}
+                    onClick={() => handleButtonProfile("off", idx)}
+                  >
+                    Off
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </CardContent>
       </Card>
-    </form>
+    </>
   );
 };
 
