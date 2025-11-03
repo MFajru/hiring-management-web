@@ -21,6 +21,7 @@ import {
 import CreateJobDialog from "./_components/create-job-dialog";
 import { useFetch } from "@/hooks/useFetch";
 import { useRouter } from "next/navigation";
+import moment from "moment";
 
 export type TProfileInfoReq = {
   name: string;
@@ -49,6 +50,7 @@ const AdminHome = () => {
 
   const { setType, setTitle } = useTopbar();
 
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [createJobData, setCreateJobData] = useState<Partial<TJobList>>({
     jobName: "",
     jobType: "",
@@ -131,8 +133,12 @@ const AdminHome = () => {
     ) {
       value = parseInt("0");
     }
+
+    const date = moment().format();
     setCreateJobData((prevValue) => ({
       ...prevValue,
+      createdDate: date.toString(),
+      status: "active",
       [key]: value,
     }));
   };
@@ -150,6 +156,14 @@ const AdminHome = () => {
       }));
     }
   };
+
+  const getJobList = () => {
+    getJobs("http://localhost:3001/jobPosting", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+  };
+
   // need to think how to close dialog after submit
   const handleOnSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -160,7 +174,9 @@ const AdminHome = () => {
       },
       body: JSON.stringify(createJobData),
     });
-    route.replace("/admin");
+    console.log(postResponse);
+    setIsDialogOpen(false);
+    getJobList();
   };
 
   useEffect(() => {
@@ -169,16 +185,9 @@ const AdminHome = () => {
   }, [setTitle, setType]);
 
   useEffect(() => {
-    getJobs("http://localhost:3001/jobPosting", {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
+    getJobList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    console.log(createJobData);
-  });
 
   return (
     <>
@@ -228,7 +237,7 @@ const AdminHome = () => {
               <h4 className="text-lg">Recruit the best candidates</h4>
               <p className="text-sm">Create jobs, invite, and hire with ease</p>
             </div>
-            <Dialog>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button id="createJob" name="createJob" className="mt-6">
                   Create a new job

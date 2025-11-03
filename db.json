@@ -121,68 +121,15 @@
       ]
     },
     {
-      "id": "7f1d",
-      "jobName": "test job",
-      "jobType": "internship",
-      "jobDesc": "test job",
-      "numOfCandidate": 10,
-      "minimumSalary": 5000000,
-      "maximumSalary": 900000,
-      "createdDate": "",
-      "status": "",
-      "requiredInfo": [
-        {
-          "name": "Full Name",
-          "reqStatus": "mandatory",
-          "isMustMandatory": true
-        },
-        {
-          "name": "Photo Profile",
-          "reqStatus": "mandatory",
-          "isMustMandatory": true
-        },
-        {
-          "name": "Gender",
-          "reqStatus": "optional",
-          "isMustMandatory": false
-        },
-        {
-          "name": "Domicile",
-          "reqStatus": "optional",
-          "isMustMandatory": false
-        },
-        {
-          "name": "Email",
-          "reqStatus": "mandatory",
-          "isMustMandatory": true
-        },
-        {
-          "name": "Phone Number",
-          "reqStatus": "mandatory",
-          "isMustMandatory": false
-        },
-        {
-          "name": "Linkedin Link",
-          "reqStatus": "mandatory",
-          "isMustMandatory": false
-        },
-        {
-          "name": "Date of Birth",
-          "reqStatus": "optional",
-          "isMustMandatory": false
-        }
-      ]
-    },
-    {
-      "id": "5163",
-      "jobName": "sada",
-      "jobType": "internship",
-      "jobDesc": "www",
-      "numOfCandidate": 2,
-      "minimumSalary": 3,
-      "maximumSalary": 1,
-      "createdDate": "",
-      "status": "",
+      "id": "5fd8",
+      "jobName": "asda",
+      "jobType": "contract",
+      "jobDesc": "sadasdads",
+      "numOfCandidate": 20,
+      "minimumSalary": 13213,
+      "maximumSalary": 213213,
+      "createdDate": "2025-11-03T11:55:30+07:00",
+      "status": "active",
       "requiredInfo": [
         {
           "name": "Full Name",
@@ -216,65 +163,12 @@
         },
         {
           "name": "Linkedin Link",
-          "reqStatus": "off",
+          "reqStatus": "optional",
           "isMustMandatory": false
         },
         {
           "name": "Date of Birth",
-          "reqStatus": "off",
-          "isMustMandatory": false
-        }
-      ]
-    },
-    {
-      "id": "abed",
-      "jobName": "test",
-      "jobType": "part-time",
-      "jobDesc": "123 test",
-      "numOfCandidate": 10,
-      "minimumSalary": 89,
-      "maximumSalary": 990,
-      "createdDate": "",
-      "status": "",
-      "requiredInfo": [
-        {
-          "name": "Full Name",
-          "reqStatus": "mandatory",
-          "isMustMandatory": true
-        },
-        {
-          "name": "Photo Profile",
-          "reqStatus": "mandatory",
-          "isMustMandatory": true
-        },
-        {
-          "name": "Gender",
-          "reqStatus": "mandatory",
-          "isMustMandatory": false
-        },
-        {
-          "name": "Domicile",
-          "reqStatus": "mandatory",
-          "isMustMandatory": false
-        },
-        {
-          "name": "Email",
-          "reqStatus": "mandatory",
-          "isMustMandatory": true
-        },
-        {
-          "name": "Phone Number",
-          "reqStatus": "mandatory",
-          "isMustMandatory": false
-        },
-        {
-          "name": "Linkedin Link",
-          "reqStatus": "off",
-          "isMustMandatory": false
-        },
-        {
-          "name": "Date of Birth",
-          "reqStatus": "off",
+          "reqStatus": "optional",
           "isMustMandatory": false
         }
       ]
@@ -282,7 +176,7 @@
   ],
   "candidates": [
     {
-      "id": 1,
+      "id": "1",
       "fullName": "John",
       "email": "john@mail.com",
       "phone": "087267282920",
@@ -293,7 +187,7 @@
       "jobId": "1"
     },
     {
-      "id": 2,
+      "id": "2",
       "fullName": "Doe",
       "email": "doe@mail.com",
       "phone": "087267282920",
@@ -304,7 +198,7 @@
       "jobId": "1"
     },
     {
-      "id": 3,
+      "id": "3",
       "fullName": "mia",
       "email": "mia@mail.com",
       "phone": "087267282920",
@@ -315,7 +209,7 @@
       "jobId": "1"
     },
     {
-      "id": 4,
+      "id": "4",
       "fullName": "Juki",
       "email": "john@mail.com",
       "phone": "087267282920",
@@ -326,7 +220,7 @@
       "jobId": "2"
     },
     {
-      "id": 5,
+      "id": "5",
       "fullName": "Joko",
       "email": "doe@mail.com",
       "phone": "087267282920",
@@ -337,7 +231,7 @@
       "jobId": "2"
     },
     {
-      "id": 6,
+      "id": "6",
       "fullName": "maimunah",
       "email": "mia@mail.com",
       "phone": "087267282920",
