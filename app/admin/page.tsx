@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/input-group";
 import { Search } from "lucide-react";
 import NoJob from "./_components/no-job";
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import CardJob from "./_components/card-job";
 import { useTopbar } from "@/context/topbarContext";
 import {
@@ -22,6 +22,7 @@ import CreateJobDialog from "./_components/create-job-dialog";
 import { useFetch } from "@/hooks/useFetch";
 import { useRouter } from "next/navigation";
 import moment from "moment";
+import { toast } from "sonner";
 
 export type TProfileInfoReq = {
   name: string;
@@ -42,71 +43,79 @@ export type TJobList = {
   requiredInfo: TProfileInfoReq[];
 };
 
+const startCreateJobValue: Partial<TJobList> = {
+  jobName: "",
+  jobType: "",
+  jobDesc: "",
+  numOfCandidate: 0,
+  minimumSalary: 0,
+  maximumSalary: 0,
+  createdDate: "",
+  status: "",
+  requiredInfo: [
+    {
+      name: "Full Name",
+      reqStatus: "mandatory",
+      isMustMandatory: true,
+    },
+    {
+      name: "Photo Profile",
+      reqStatus: "mandatory",
+      isMustMandatory: true,
+    },
+    {
+      name: "Gender",
+      reqStatus: "",
+      isMustMandatory: false,
+    },
+    {
+      name: "Domicile",
+      reqStatus: "",
+      isMustMandatory: false,
+    },
+    {
+      name: "Email",
+      reqStatus: "mandatory",
+      isMustMandatory: true,
+    },
+    {
+      name: "Phone Number",
+      reqStatus: "",
+      isMustMandatory: false,
+    },
+    {
+      name: "Linkedin Link",
+      reqStatus: "",
+      isMustMandatory: false,
+    },
+    {
+      name: "Date of Birth",
+      reqStatus: "",
+      isMustMandatory: false,
+    },
+  ],
+};
+
+const regex = /^\d+$/;
+
 const AdminHome = () => {
   const route = useRouter();
   const { data: jobList, fetchData: getJobs } = useFetch<Partial<TJobList[]>>();
-  const { data: postResponse, fetchData: postJobs } =
-    useFetch<Partial<TJobList>>();
+  const {
+    fetchData: postJobs,
+    error: errorPostResponse,
+    errorMsg,
+  } = useFetch<Partial<TJobList>>();
 
   const { setType, setTitle } = useTopbar();
 
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [createJobData, setCreateJobData] = useState<Partial<TJobList>>({
-    jobName: "",
-    jobType: "",
-    jobDesc: "",
-    numOfCandidate: 0,
-    minimumSalary: 0,
-    maximumSalary: 0,
-    createdDate: "",
-    status: "",
-    requiredInfo: [
-      {
-        name: "Full Name",
-        reqStatus: "mandatory",
-        isMustMandatory: true,
-      },
-      {
-        name: "Photo Profile",
-        reqStatus: "mandatory",
-        isMustMandatory: true,
-      },
-      {
-        name: "Gender",
-        reqStatus: "",
-        isMustMandatory: false,
-      },
-      {
-        name: "Domicile",
-        reqStatus: "",
-        isMustMandatory: false,
-      },
-      {
-        name: "Email",
-        reqStatus: "mandatory",
-        isMustMandatory: true,
-      },
-      {
-        name: "Phone Number",
-        reqStatus: "",
-        isMustMandatory: false,
-      },
-      {
-        name: "Linkedin Link",
-        reqStatus: "",
-        isMustMandatory: false,
-      },
-      {
-        name: "Date of Birth",
-        reqStatus: "",
-        isMustMandatory: false,
-      },
-    ],
-  });
+  const [createJobData, setCreateJobData] =
+    useState<Partial<TJobList>>(startCreateJobValue);
 
-  const handleOnChange = (e: any) => {
-    // select = e, other e.target.value
-
+  const handleOnChange = (
+    e: ChangeEvent<HTMLInputElement> | string | ChangeEvent<HTMLTextAreaElement>
+  ) => {
     if (typeof e === "string") {
       setCreateJobData((prevValue) => ({
         ...prevValue,
@@ -116,20 +125,29 @@ const AdminHome = () => {
     }
 
     const key = e.target.name;
-    let value = e.target.value;
+    let value: string | number = e.target.value;
 
     if (
       (key === "minimumSalary" ||
         key === "maximumSalary" ||
         key === "numOfCandidate") &&
-      value
+      value.length > 15
     ) {
-      value = parseInt(value);
-    } else if (
+      return;
+    }
+
+    if (
       (key === "minimumSalary" ||
         key === "maximumSalary" ||
         key === "numOfCandidate") &&
-      !value
+      value &&
+      regex.test(value.replace(/\./g, ""))
+    ) {
+      value = parseInt(value.replace(/\./g, ""));
+    } else if (
+      key === "minimumSalary" ||
+      key === "maximumSalary" ||
+      key === "numOfCandidate"
     ) {
       value = parseInt("0");
     }
@@ -164,7 +182,6 @@ const AdminHome = () => {
     });
   };
 
-  // need to think how to close dialog after submit
   const handleOnSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     postJobs("http://localhost:3001/jobPosting", {
@@ -174,10 +191,22 @@ const AdminHome = () => {
       },
       body: JSON.stringify(createJobData),
     });
-    console.log(postResponse);
-    setIsDialogOpen(false);
-    getJobList();
   };
+
+  useEffect(() => {
+    if (errorPostResponse === null) {
+      return;
+    } else if (errorPostResponse === ("no error" as unknown as Error)) {
+      setIsDialogOpen(false);
+      getJobList();
+      setCreateJobData(startCreateJobValue);
+      toast.success("Success add data");
+    } else {
+      toast.error("Error posting data, " + errorPostResponse);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [errorPostResponse]);
 
   useEffect(() => {
     setType("title");
@@ -250,8 +279,8 @@ const AdminHome = () => {
                 <DialogHeader>
                   <DialogTitle>Job Opening</DialogTitle>
                 </DialogHeader>
-                <form onSubmit={handleOnSubmit} className="flex flex-col gap-4">
-                  <div className="max-h-[350px] lg:max-h-[500px] overflow-auto scrollbar-hidden">
+                <form onSubmit={handleOnSubmit}>
+                  <div className="max-h-[350px] lg:max-h-[500px] overflow-auto scrollbar-hidden flex flex-col gap-4">
                     <CreateJobDialog
                       jobData={createJobData}
                       handleOnChange={handleOnChange}

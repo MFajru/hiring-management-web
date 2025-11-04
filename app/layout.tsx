@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Nunito_Sans } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "sonner";
 
 export const nunitoSans = Nunito_Sans({
   subsets: ["latin"],
@@ -19,7 +20,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${nunitoSans.className} antialiased`}>{children}</body>
+      <body className={`${nunitoSans.className} antialiased`}>
+        <Toaster richColors />
+        {children}
+      </body>
     </html>
   );
 }

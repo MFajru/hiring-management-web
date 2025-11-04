@@ -31,6 +31,7 @@ export const useFetch = <T>(): UseFetchResponse<T> => {
         }`
         );
       }
+      setError("no error" as unknown as Error);
       setData(data);
     } catch (error) {
       if (error instanceof SyntaxError) {

@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { TJobList, TProfileInfoReq } from "../page";
+import { ChangeEvent } from "react";
 
 const CreateJobDialog = ({
   jobData,
@@ -27,7 +28,9 @@ const CreateJobDialog = ({
   handleButtonProfile,
 }: {
   jobData: Partial<TJobList>;
-  handleOnChange: (e: any) => void;
+  handleOnChange: (
+    e: ChangeEvent<HTMLInputElement> | string | ChangeEvent<HTMLTextAreaElement>
+  ) => void;
   handleButtonProfile: (
     param: "mandatory" | "optional" | "off",
     idx: number
@@ -102,7 +105,13 @@ const CreateJobDialog = ({
                 type="text"
                 placeholder="7.000.000"
                 className="pl-1!"
-                value={jobData.minimumSalary === 0 ? "" : jobData.minimumSalary}
+                value={
+                  jobData.minimumSalary === 0
+                    ? ""
+                    : new Intl.NumberFormat("id-ID").format(
+                        jobData.minimumSalary as number
+                      )
+                }
                 onChange={handleOnChange}
               />
               <InputGroupAddon>
@@ -121,7 +130,13 @@ const CreateJobDialog = ({
                 type="text"
                 placeholder="8.000.000"
                 className="pl-1!"
-                value={jobData.maximumSalary === 0 ? "" : jobData.maximumSalary}
+                value={
+                  jobData.maximumSalary === 0
+                    ? ""
+                    : new Intl.NumberFormat("id-ID").format(
+                        jobData.maximumSalary as number
+                      )
+                }
                 onChange={handleOnChange}
               />
               <InputGroupAddon>
