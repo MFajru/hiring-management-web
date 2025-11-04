@@ -1,12 +1,20 @@
+import { error } from "console";
 import { Input } from "../ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupText,
+} from "../ui/input-group";
 import { Label } from "../ui/label";
-import { InputHTMLAttributes } from "react";
+import { InputHTMLAttributes, useEffect } from "react";
 
 interface TInputLabel extends InputHTMLAttributes<HTMLInputElement> {
   inputId: string;
   inputType: string;
   label: string;
   placeholder?: string;
+  errorMsg?: string;
 }
 
 const InputLabel = ({
@@ -14,6 +22,7 @@ const InputLabel = ({
   inputType,
   label,
   placeholder,
+  errorMsg,
   ...props
 }: TInputLabel) => {
   return (
@@ -21,13 +30,22 @@ const InputLabel = ({
       <Label htmlFor={inputId} className="font-normal text-xs">
         {label}
       </Label>
-      <Input
-        type={inputType}
-        id={inputId}
-        name={inputId}
-        placeholder={placeholder}
-        {...props}
-      ></Input>
+      <InputGroup>
+        <InputGroupInput
+          type={inputType}
+          id={inputId}
+          name={inputId}
+          placeholder={placeholder}
+          {...props}
+        />
+        {errorMsg && errorMsg !== "" && (
+          <InputGroupAddon align="inline-end">
+            <InputGroupText className="text-red-500 text-xs">
+              {errorMsg}
+            </InputGroupText>
+          </InputGroupAddon>
+        )}
+      </InputGroup>
     </div>
   );
 };

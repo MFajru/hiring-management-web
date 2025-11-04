@@ -121,159 +121,122 @@
       ]
     },
     {
-      "id": "5fd8",
-      "jobName": "asda",
-      "jobType": "contract",
-      "jobDesc": "sadasdads",
-      "numOfCandidate": 20,
-      "minimumSalary": 13213,
-      "maximumSalary": 213213,
-      "createdDate": "2025-11-03T11:55:30+07:00",
+      "id": "d1ee",
+      "jobName": "",
+      "jobType": "",
+      "jobDesc": "",
+      "numOfCandidate": 0,
+      "minimumSalary": 0,
+      "maximumSalary": 0,
+      "createdDate": "2025-11-04T19:18:05+07:00",
       "status": "active",
       "requiredInfo": [
         {
           "name": "Full Name",
+          "slug": "fullname",
           "reqStatus": "mandatory",
           "isMustMandatory": true
         },
         {
           "name": "Photo Profile",
+          "slug": "photoprofile",
           "reqStatus": "mandatory",
           "isMustMandatory": true
         },
         {
           "name": "Gender",
-          "reqStatus": "optional",
+          "slug": "gender",
+          "reqStatus": "",
           "isMustMandatory": false
         },
         {
           "name": "Domicile",
-          "reqStatus": "optional",
+          "slug": "domicile",
+          "reqStatus": "",
           "isMustMandatory": false
         },
         {
           "name": "Email",
+          "slug": "email",
           "reqStatus": "mandatory",
           "isMustMandatory": true
         },
         {
           "name": "Phone Number",
-          "reqStatus": "off",
+          "slug": "phonenumber",
+          "reqStatus": "",
           "isMustMandatory": false
         },
         {
           "name": "Linkedin Link",
-          "reqStatus": "optional",
+          "slug": "linkedinlink",
+          "reqStatus": "",
           "isMustMandatory": false
         },
         {
           "name": "Date of Birth",
-          "reqStatus": "optional",
+          "slug": "dob",
+          "reqStatus": "",
           "isMustMandatory": false
         }
       ]
     },
     {
-      "id": "f24b",
-      "jobName": "test",
-      "jobType": "full-time",
-      "jobDesc": "asdadadd",
-      "numOfCandidate": 2,
-      "minimumSalary": 1313123,
-      "maximumSalary": 1231312,
-      "createdDate": "2025-11-04T09:57:30+07:00",
+      "id": "0a16",
+      "jobName": "sda",
+      "jobType": "",
+      "jobDesc": "sdwad2",
+      "numOfCandidate": 0,
+      "minimumSalary": 0,
+      "maximumSalary": 0,
+      "createdDate": "2025-11-04T19:36:35+07:00",
       "status": "active",
       "requiredInfo": [
         {
           "name": "Full Name",
+          "slug": "fullname",
           "reqStatus": "mandatory",
           "isMustMandatory": true
         },
         {
           "name": "Photo Profile",
+          "slug": "photoprofile",
           "reqStatus": "mandatory",
           "isMustMandatory": true
         },
         {
           "name": "Gender",
-          "reqStatus": "mandatory",
-          "isMustMandatory": false
-        },
-        {
-          "name": "Domicile",
-          "reqStatus": "mandatory",
-          "isMustMandatory": false
-        },
-        {
-          "name": "Email",
-          "reqStatus": "mandatory",
-          "isMustMandatory": true
-        },
-        {
-          "name": "Phone Number",
-          "reqStatus": "off",
-          "isMustMandatory": false
-        },
-        {
-          "name": "Linkedin Link",
-          "reqStatus": "mandatory",
-          "isMustMandatory": false
-        },
-        {
-          "name": "Date of Birth",
-          "reqStatus": "optional",
-          "isMustMandatory": false
-        }
-      ]
-    },
-    {
-      "id": "8d0d",
-      "jobName": "test 3",
-      "jobType": "contract",
-      "jobDesc": "asdadasdas",
-      "numOfCandidate": 2,
-      "minimumSalary": 9000000,
-      "maximumSalary": 23213121,
-      "createdDate": "2025-11-04T13:27:28+07:00",
-      "status": "active",
-      "requiredInfo": [
-        {
-          "name": "Full Name",
-          "reqStatus": "mandatory",
-          "isMustMandatory": true
-        },
-        {
-          "name": "Photo Profile",
-          "reqStatus": "mandatory",
-          "isMustMandatory": true
-        },
-        {
-          "name": "Gender",
+          "slug": "gender",
           "reqStatus": "",
           "isMustMandatory": false
         },
         {
           "name": "Domicile",
+          "slug": "domicile",
           "reqStatus": "",
           "isMustMandatory": false
         },
         {
           "name": "Email",
+          "slug": "email",
           "reqStatus": "mandatory",
           "isMustMandatory": true
         },
         {
           "name": "Phone Number",
+          "slug": "phonenumber",
           "reqStatus": "",
           "isMustMandatory": false
         },
         {
           "name": "Linkedin Link",
+          "slug": "linkedinlink",
           "reqStatus": "",
           "isMustMandatory": false
         },
         {
           "name": "Date of Birth",
+          "slug": "dob",
           "reqStatus": "",
           "isMustMandatory": false
         }

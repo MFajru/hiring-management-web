@@ -23,9 +23,25 @@ import { useFetch } from "@/hooks/useFetch";
 import { useRouter } from "next/navigation";
 import moment from "moment";
 import { toast } from "sonner";
+import { startCreateJobValue, startErrorMsg } from "./_const/const";
+
+export type TErrorMsg = {
+  jobName: string;
+  jobType: string;
+  jobDesc: string;
+  numOfCandidate: string;
+  minimumSalary: string;
+  maximumSalary: string;
+  gender: string;
+  domicile: string;
+  phoneNumber: string;
+  linkedinLink: string;
+  dob: string;
+};
 
 export type TProfileInfoReq = {
   name: string;
+  slug: string;
   reqStatus: "mandatory" | "optional" | "off" | "";
   isMustMandatory: boolean;
 };
@@ -43,68 +59,15 @@ export type TJobList = {
   requiredInfo: TProfileInfoReq[];
 };
 
-const startCreateJobValue: Partial<TJobList> = {
-  jobName: "",
-  jobType: "",
-  jobDesc: "",
-  numOfCandidate: 0,
-  minimumSalary: 0,
-  maximumSalary: 0,
-  createdDate: "",
-  status: "",
-  requiredInfo: [
-    {
-      name: "Full Name",
-      reqStatus: "mandatory",
-      isMustMandatory: true,
-    },
-    {
-      name: "Photo Profile",
-      reqStatus: "mandatory",
-      isMustMandatory: true,
-    },
-    {
-      name: "Gender",
-      reqStatus: "",
-      isMustMandatory: false,
-    },
-    {
-      name: "Domicile",
-      reqStatus: "",
-      isMustMandatory: false,
-    },
-    {
-      name: "Email",
-      reqStatus: "mandatory",
-      isMustMandatory: true,
-    },
-    {
-      name: "Phone Number",
-      reqStatus: "",
-      isMustMandatory: false,
-    },
-    {
-      name: "Linkedin Link",
-      reqStatus: "",
-      isMustMandatory: false,
-    },
-    {
-      name: "Date of Birth",
-      reqStatus: "",
-      isMustMandatory: false,
-    },
-  ],
-};
-
 const regex = /^\d+$/;
 
 const AdminHome = () => {
   const route = useRouter();
   const { data: jobList, fetchData: getJobs } = useFetch<Partial<TJobList[]>>();
   const {
+    data: postData,
     fetchData: postJobs,
     error: errorPostResponse,
-    errorMsg,
   } = useFetch<Partial<TJobList>>();
 
   const { setType, setTitle } = useTopbar();
@@ -112,10 +75,12 @@ const AdminHome = () => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [createJobData, setCreateJobData] =
     useState<Partial<TJobList>>(startCreateJobValue);
+  const [errorMsg, setErrorMsg] = useState<TErrorMsg>(startErrorMsg);
 
   const handleOnChange = (
     e: ChangeEvent<HTMLInputElement> | string | ChangeEvent<HTMLTextAreaElement>
   ) => {
+    setErrorMsg(startErrorMsg);
     if (typeof e === "string") {
       setCreateJobData((prevValue) => ({
         ...prevValue,
@@ -184,13 +149,18 @@ const AdminHome = () => {
 
   const handleOnSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    postJobs("http://localhost:3001/jobPosting", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(createJobData),
-    });
+
+    const isError = checkErrorInput();
+
+    if (!isError) {
+      postJobs("http://localhost:3001/jobPosting", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(createJobData),
+      });
+    }
   };
 
   useEffect(() => {
@@ -206,7 +176,7 @@ const AdminHome = () => {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [errorPostResponse]);
+  }, [errorPostResponse, postData]);
 
   useEffect(() => {
     setType("title");
@@ -217,6 +187,52 @@ const AdminHome = () => {
     getJobList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const checkErrorInput = (): boolean => {
+    console.log("jobData", createJobData);
+    if (createJobData && createJobData.requiredInfo) {
+      console.log("masuk");
+
+      const jobDataKeys = Object.keys(createJobData);
+      const requiredInfoKeys = Object.keys(createJobData.requiredInfo[0]);
+      const errorKeys = Object.keys(errorMsg);
+
+      for (const key of jobDataKeys) {
+        if (
+          createJobData[key as keyof TJobList] === "" ||
+          createJobData[key as keyof TJobList] === 0
+        ) {
+          setErrorMsg((prevValue) => ({
+            ...prevValue,
+            [key]: `${key} must be filled`,
+          }));
+        }
+      }
+
+      for (const key of requiredInfoKeys) {
+        for (const req of createJobData.requiredInfo) {
+          if (key.toLowerCase() === req.slug && req.reqStatus === "") {
+            setErrorMsg((prevValue) => ({
+              ...prevValue,
+              [key]: `${key} must be filled`,
+            }));
+          }
+        }
+      }
+
+      for (const errKey of errorKeys) {
+        if (errorMsg[errKey as keyof TErrorMsg] !== "") {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    console.log(errorMsg);
+  });
 
   return (
     <>
@@ -283,6 +299,7 @@ const AdminHome = () => {
                   <div className="max-h-[350px] lg:max-h-[500px] overflow-auto scrollbar-hidden flex flex-col gap-4">
                     <CreateJobDialog
                       jobData={createJobData}
+                      errorMsg={errorMsg}
                       handleOnChange={handleOnChange}
                       handleButtonProfile={handleButtonProfile}
                     />

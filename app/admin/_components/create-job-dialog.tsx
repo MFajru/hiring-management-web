@@ -8,6 +8,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
   InputGroupText,
+  InputGroupTextarea,
 } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import {
@@ -18,16 +19,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { TJobList, TProfileInfoReq } from "../page";
+import { TErrorMsg, TJobList, TProfileInfoReq } from "../page";
 import { ChangeEvent } from "react";
 
-const CreateJobDialog = ({
-  jobData,
-  handleOnChange,
-  handleButtonProfile,
-}: {
+type TCreateJobDialog = {
   jobData: Partial<TJobList>;
+  errorMsg: TErrorMsg;
   handleOnChange: (
     e: ChangeEvent<HTMLInputElement> | string | ChangeEvent<HTMLTextAreaElement>
   ) => void;
@@ -35,7 +32,14 @@ const CreateJobDialog = ({
     param: "mandatory" | "optional" | "off",
     idx: number
   ) => void;
-}) => {
+};
+
+const CreateJobDialog = ({
+  jobData,
+  errorMsg,
+  handleOnChange,
+  handleButtonProfile,
+}: TCreateJobDialog) => {
   return (
     <>
       <InputLabel
@@ -44,6 +48,7 @@ const CreateJobDialog = ({
         name="jobName"
         label="Job Name"
         placeholder="Ex. Front End Engineer"
+        errorMsg={errorMsg.jobName}
         value={jobData.jobName}
         onChange={handleOnChange}
       />
@@ -52,33 +57,53 @@ const CreateJobDialog = ({
         <Label htmlFor="jobType" className="text-xs font-normal">
           Job Type
         </Label>
-        <Select onValueChange={handleOnChange} value={jobData.jobType}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select job type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem value="full-time">Full-time</SelectItem>
-              <SelectItem value="contract">Contract</SelectItem>
-              <SelectItem value="part-time">Part-time</SelectItem>
-              <SelectItem value="internship">Internship</SelectItem>
-              <SelectItem value="freelance">Freelance</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        <div className="flex flex-col gap-2 relative">
+          <Select onValueChange={handleOnChange} value={jobData.jobType}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select job type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="full-time">Full-time</SelectItem>
+                <SelectItem value="contract">Contract</SelectItem>
+                <SelectItem value="part-time">Part-time</SelectItem>
+                <SelectItem value="internship">Internship</SelectItem>
+                <SelectItem value="freelance">Freelance</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <p className="text-red-500 text-xs absolute right-8 top-2.5">
+            {errorMsg.jobType}
+          </p>
+        </div>
       </div>
 
-      <div className="grid w-full gap-2">
+      <div className="w-full gap-2 flex flex-col">
         <Label htmlFor="jobdesc" className="text-xs font-normal">
           Job Description
         </Label>
-        <Textarea
-          placeholder="Ex. Successfully gaining more customers"
-          id="jobdesc"
-          name="jobDesc"
-          value={jobData.jobDesc}
-          onChange={handleOnChange}
-        />
+        <InputGroup>
+          <InputGroupTextarea
+            placeholder="Ex. Successfully gaining more customers"
+            id="jobdesc"
+            name="jobDesc"
+            value={jobData.jobDesc}
+            onChange={handleOnChange}
+          />
+          {errorMsg.jobDesc === "" ? (
+            <InputGroupAddon align="block-end">
+              <InputGroupText className="text-transparent text-xs ml-auto">
+                ga ada
+              </InputGroupText>
+            </InputGroupAddon>
+          ) : (
+            <InputGroupAddon align="block-end">
+              <InputGroupText className="text-red-500 text-xs ml-auto">
+                {errorMsg.jobDesc}
+              </InputGroupText>
+            </InputGroupAddon>
+          )}
+        </InputGroup>
       </div>
 
       <InputLabel
@@ -87,12 +112,20 @@ const CreateJobDialog = ({
         label="Number of Candidate Needed"
         placeholder="Ex. 2"
         name="numOfCandidate"
+        errorMsg={errorMsg.numOfCandidate}
         value={jobData.numOfCandidate === 0 ? "" : jobData.numOfCandidate}
         onChange={handleOnChange}
       />
 
       <div className="w-full flex flex-col gap-4">
-        <h5 className="text-xs">Job Salary</h5>
+        <div className="flex justify-between">
+          <h5 className="text-xs">Job Salary</h5>
+          {errorMsg.minimumSalary !== "" && errorMsg.maximumSalary !== "" && (
+            <p className="text-red-500 text-xs font-medium pr-3">
+              Salary must be filled
+            </p>
+          )}
+        </div>
         <div className="flex items-center justify-between w-full gap-4">
           <div className="flex flex-col gap-2 w-full">
             <Label htmlFor="" className="text-xs">
