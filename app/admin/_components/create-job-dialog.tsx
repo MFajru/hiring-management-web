@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { TErrorMsg, TJobList, TProfileInfoReq } from "../page";
 import { ChangeEvent } from "react";
+import { camelize } from "@/lib/camelize";
 
 type TCreateJobDialog = {
   jobData: Partial<TJobList>;
@@ -192,13 +193,21 @@ const CreateJobDialog = ({
             jobData.requiredInfo.map((item: TProfileInfoReq, idx: number) => (
               <div
                 key={item.name}
-                className={`flex justify-between ${
+                className={`relative flex justify-between ${
                   jobData.requiredInfo &&
                   idx !== jobData.requiredInfo.length - 1 &&
                   "border-b border-gray-300"
                 }  py-4 items-center`}
               >
                 <p className="text-sm">{item.name}</p>
+                {item.reqStatus === "" ? (
+                  <p className="text-red-500 text-xs absolute bottom-0 w-full">
+                    {errorMsg[item.slug as keyof TErrorMsg]}
+                  </p>
+                ) : (
+                  <p className="text-transparent text-xs absolute bottom-0 w-full"></p>
+                )}
+
                 <div className="flex justify-between gap-2">
                   <Button
                     type="button"

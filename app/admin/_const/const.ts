@@ -12,13 +12,13 @@ export const startCreateJobValue: Partial<TJobList> = {
   requiredInfo: [
     {
       name: "Full Name",
-      slug: "fullname",
+      slug: "fullName",
       reqStatus: "mandatory",
       isMustMandatory: true,
     },
     {
       name: "Photo Profile",
-      slug: "photoprofile",
+      slug: "photoProfile",
       reqStatus: "mandatory",
       isMustMandatory: true,
     },
@@ -42,13 +42,13 @@ export const startCreateJobValue: Partial<TJobList> = {
     },
     {
       name: "Phone Number",
-      slug: "phonenumber",
+      slug: "phoneNumber",
       reqStatus: "",
       isMustMandatory: false,
     },
     {
       name: "Linkedin Link",
-      slug: "linkedinlink",
+      slug: "linkedinLink",
       reqStatus: "",
       isMustMandatory: false,
     },

@@ -24,6 +24,8 @@ import { useRouter } from "next/navigation";
 import moment from "moment";
 import { toast } from "sonner";
 import { startCreateJobValue, startErrorMsg } from "./_const/const";
+import { regexDecimalOnly } from "@/lib/regex";
+import { titleCase } from "@/lib/titleCase";
 
 export type TErrorMsg = {
   jobName: string;
@@ -59,9 +61,8 @@ export type TJobList = {
   requiredInfo: TProfileInfoReq[];
 };
 
-const regex = /^\d+$/;
-
 const AdminHome = () => {
+  let countErr = 0;
   const route = useRouter();
   const { data: jobList, fetchData: getJobs } = useFetch<Partial<TJobList[]>>();
   const {
@@ -106,7 +107,7 @@ const AdminHome = () => {
         key === "maximumSalary" ||
         key === "numOfCandidate") &&
       value &&
-      regex.test(value.replace(/\./g, ""))
+      regexDecimalOnly.test(value.replace(/\./g, ""))
     ) {
       value = parseInt(value.replace(/\./g, ""));
     } else if (
@@ -150,8 +151,7 @@ const AdminHome = () => {
   const handleOnSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const isError = checkErrorInput();
-
+    const isError = isErrorInput();
     if (!isError) {
       postJobs("http://localhost:3001/jobPosting", {
         method: "POST",
@@ -170,6 +170,7 @@ const AdminHome = () => {
       setIsDialogOpen(false);
       getJobList();
       setCreateJobData(startCreateJobValue);
+      setErrorMsg(startErrorMsg);
       toast.success("Success add data");
     } else {
       toast.error("Error posting data, " + errorPostResponse);
@@ -188,51 +189,46 @@ const AdminHome = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const checkErrorInput = (): boolean => {
-    console.log("jobData", createJobData);
+  const isErrorInput = (): boolean => {
     if (createJobData && createJobData.requiredInfo) {
-      console.log("masuk");
-
       const jobDataKeys = Object.keys(createJobData);
-      const requiredInfoKeys = Object.keys(createJobData.requiredInfo[0]);
       const errorKeys = Object.keys(errorMsg);
 
       for (const key of jobDataKeys) {
         if (
-          createJobData[key as keyof TJobList] === "" ||
-          createJobData[key as keyof TJobList] === 0
+          (createJobData[key as keyof TJobList] === "" ||
+            createJobData[key as keyof TJobList] === 0) &&
+          errorKeys.includes(key)
         ) {
           setErrorMsg((prevValue) => ({
             ...prevValue,
-            [key]: `${key} must be filled`,
+            [key]: `${titleCase(key)} must be filled`,
           }));
+          countErr += 1;
         }
       }
 
-      for (const key of requiredInfoKeys) {
-        for (const req of createJobData.requiredInfo) {
-          if (key.toLowerCase() === req.slug && req.reqStatus === "") {
-            setErrorMsg((prevValue) => ({
-              ...prevValue,
-              [key]: `${key} must be filled`,
-            }));
-          }
+      for (const req of createJobData.requiredInfo) {
+        if (req.reqStatus === "" && errorKeys.includes(req.slug)) {
+          setErrorMsg((prevValue) => ({
+            ...prevValue,
+            [req.slug]: `${titleCase(req.slug)} must be filled`,
+          }));
+          countErr += 1;
         }
       }
 
-      for (const errKey of errorKeys) {
-        if (errorMsg[errKey as keyof TErrorMsg] !== "") {
-          return false;
-        }
+      if (countErr > 0) {
+        return true;
       }
-      return true;
+      return false;
     }
-    return false;
+    return true;
   };
 
   useEffect(() => {
-    console.log(errorMsg);
-  });
+    setErrorMsg(startErrorMsg);
+  }, [isDialogOpen]);
 
   return (
     <>

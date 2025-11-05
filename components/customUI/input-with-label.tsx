@@ -1,5 +1,3 @@
-import { error } from "console";
-import { Input } from "../ui/input";
 import {
   InputGroup,
   InputGroupAddon,
@@ -7,7 +5,7 @@ import {
   InputGroupText,
 } from "../ui/input-group";
 import { Label } from "../ui/label";
-import { InputHTMLAttributes, useEffect } from "react";
+import { InputHTMLAttributes } from "react";
 
 interface TInputLabel extends InputHTMLAttributes<HTMLInputElement> {
   inputId: string;
