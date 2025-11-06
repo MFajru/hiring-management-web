@@ -28,7 +28,8 @@ const InputLabel = ({
       <Label htmlFor={inputId} className="font-normal text-xs">
         {label}
       </Label>
-      <InputGroup>
+
+      <InputGroup className={errorMsg !== "" ? "border border-red-500" : ""}>
         <InputGroupInput
           type={inputType}
           id={inputId}

@@ -1,6 +1,15 @@
-import { Button } from "@/components/ui/button";
+import { Dispatch } from "react";
 import Image from "next/image";
-const NoJob = () => {
+import { Button } from "@/components/ui/button";
+const NoJob = ({
+  setIsDialogOpen,
+}: {
+  setIsDialogOpen: Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  const handleButton = () => {
+    setIsDialogOpen(true);
+  };
+
   return (
     <>
       <Image
@@ -18,6 +27,7 @@ const NoJob = () => {
         id="createJob"
         name="createJob"
         className="text-black"
+        onClick={() => handleButton()}
       >
         Create new job
       </Button>

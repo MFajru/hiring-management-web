@@ -8,9 +8,9 @@
     },
     {
       "id": "2",
-      "email": "applicant@mail.com",
-      "password": "applicant",
-      "role": "applicant"
+      "email": "candidate@mail.com",
+      "password": "candidate",
+      "role": "candidate"
     }
   ],
   "jobPosting": [
@@ -116,128 +116,6 @@
         {
           "name": "Date of Birth",
           "reqStatus": "mandatory",
-          "isMustMandatory": false
-        }
-      ]
-    },
-    {
-      "id": "d1ee",
-      "jobName": "",
-      "jobType": "",
-      "jobDesc": "",
-      "numOfCandidate": 0,
-      "minimumSalary": 0,
-      "maximumSalary": 0,
-      "createdDate": "2025-11-04T19:18:05+07:00",
-      "status": "active",
-      "requiredInfo": [
-        {
-          "name": "Full Name",
-          "slug": "fullname",
-          "reqStatus": "mandatory",
-          "isMustMandatory": true
-        },
-        {
-          "name": "Photo Profile",
-          "slug": "photoprofile",
-          "reqStatus": "mandatory",
-          "isMustMandatory": true
-        },
-        {
-          "name": "Gender",
-          "slug": "gender",
-          "reqStatus": "",
-          "isMustMandatory": false
-        },
-        {
-          "name": "Domicile",
-          "slug": "domicile",
-          "reqStatus": "",
-          "isMustMandatory": false
-        },
-        {
-          "name": "Email",
-          "slug": "email",
-          "reqStatus": "mandatory",
-          "isMustMandatory": true
-        },
-        {
-          "name": "Phone Number",
-          "slug": "phonenumber",
-          "reqStatus": "",
-          "isMustMandatory": false
-        },
-        {
-          "name": "Linkedin Link",
-          "slug": "linkedinlink",
-          "reqStatus": "",
-          "isMustMandatory": false
-        },
-        {
-          "name": "Date of Birth",
-          "slug": "dob",
-          "reqStatus": "",
-          "isMustMandatory": false
-        }
-      ]
-    },
-    {
-      "id": "0a16",
-      "jobName": "sda",
-      "jobType": "",
-      "jobDesc": "sdwad2",
-      "numOfCandidate": 0,
-      "minimumSalary": 0,
-      "maximumSalary": 0,
-      "createdDate": "2025-11-04T19:36:35+07:00",
-      "status": "active",
-      "requiredInfo": [
-        {
-          "name": "Full Name",
-          "slug": "fullname",
-          "reqStatus": "mandatory",
-          "isMustMandatory": true
-        },
-        {
-          "name": "Photo Profile",
-          "slug": "photoprofile",
-          "reqStatus": "mandatory",
-          "isMustMandatory": true
-        },
-        {
-          "name": "Gender",
-          "slug": "gender",
-          "reqStatus": "",
-          "isMustMandatory": false
-        },
-        {
-          "name": "Domicile",
-          "slug": "domicile",
-          "reqStatus": "",
-          "isMustMandatory": false
-        },
-        {
-          "name": "Email",
-          "slug": "email",
-          "reqStatus": "mandatory",
-          "isMustMandatory": true
-        },
-        {
-          "name": "Phone Number",
-          "slug": "phonenumber",
-          "reqStatus": "",
-          "isMustMandatory": false
-        },
-        {
-          "name": "Linkedin Link",
-          "slug": "linkedinlink",
-          "reqStatus": "",
-          "isMustMandatory": false
-        },
-        {
-          "name": "Date of Birth",
-          "slug": "dob",
-          "reqStatus": "",
           "isMustMandatory": false
         }
       ]

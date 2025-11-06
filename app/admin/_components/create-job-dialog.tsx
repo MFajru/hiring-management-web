@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { TErrorMsg, TJobList, TProfileInfoReq } from "../page";
 import { ChangeEvent } from "react";
-import { camelize } from "@/lib/camelize";
+import TextAreaLabel from "@/components/customUI/textarea-with-label";
 
 type TCreateJobDialog = {
   jobData: Partial<TJobList>;
@@ -60,7 +60,11 @@ const CreateJobDialog = ({
         </Label>
         <div className="flex flex-col gap-2 relative">
           <Select onValueChange={handleOnChange} value={jobData.jobType}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger
+              className={`w-full border ${
+                errorMsg.jobType !== "" ? "border-red-500" : ""
+              } `}
+            >
               <SelectValue placeholder="Select job type" />
             </SelectTrigger>
             <SelectContent>
@@ -79,34 +83,15 @@ const CreateJobDialog = ({
         </div>
       </div>
 
-      <div className="w-full gap-2 flex flex-col">
-        <Label htmlFor="jobdesc" className="text-xs font-normal">
-          Job Description
-        </Label>
-        <InputGroup>
-          <InputGroupTextarea
-            placeholder="Ex. Successfully gaining more customers"
-            id="jobdesc"
-            name="jobDesc"
-            value={jobData.jobDesc}
-            onChange={handleOnChange}
-          />
-          {errorMsg.jobDesc === "" ? (
-            <InputGroupAddon align="block-end">
-              <InputGroupText className="text-transparent text-xs ml-auto">
-                ga ada
-              </InputGroupText>
-            </InputGroupAddon>
-          ) : (
-            <InputGroupAddon align="block-end">
-              <InputGroupText className="text-red-500 text-xs ml-auto">
-                {errorMsg.jobDesc}
-              </InputGroupText>
-            </InputGroupAddon>
-          )}
-        </InputGroup>
-      </div>
-
+      <TextAreaLabel
+        placeholder="Ex. Successfully gaining more customers"
+        id="jobdesc"
+        name="jobDesc"
+        errorMsg={errorMsg.jobDesc}
+        label="Job Description"
+        value={jobData.jobDesc}
+        onChange={handleOnChange}
+      />
       <InputLabel
         inputId="numOfCandidate"
         inputType="text"

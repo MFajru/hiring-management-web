@@ -246,7 +246,7 @@ const AdminHome = () => {
         {jobList ? (
           <div className="flex flex-col items-center gap-4 w-full py-4">
             {(jobList as TJobList[]).length === 0 ? (
-              <NoJob />
+              <NoJob setIsDialogOpen={setIsDialogOpen} />
             ) : (
               (jobList as TJobList[]).map((job) => (
                 <React.Fragment key={job.id}>
