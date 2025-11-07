@@ -12,11 +12,11 @@ import { useTopbar } from "@/context/topbarContext";
 import React from "react";
 
 interface ITopbar {
-  src?: string;
-  fallback?: string;
+  avatarSrc?: string;
+  avatarFallback?: string;
 }
 
-const Topbar = ({ src, fallback }: ITopbar) => {
+const Topbar = ({ avatarSrc: src, avatarFallback: fallback }: ITopbar) => {
   const { type, breadcrumb, title } = useTopbar();
 
   return (

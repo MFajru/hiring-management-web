@@ -1,7 +1,7 @@
-import React from "react";
+import { redirect } from "next/navigation";
 
-const ApplicantHome = () => {
-  return <div>ApplicantHome</div>;
+const Candidate = () => {
+  redirect("/candidate/joblist");
 };
 
-export default ApplicantHome;
+export default Candidate;
