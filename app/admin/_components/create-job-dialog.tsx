@@ -22,6 +22,7 @@ import {
 import { TErrorMsg, TJobList, TProfileInfoReq } from "../page";
 import { ChangeEvent } from "react";
 import TextAreaLabel from "@/components/customUI/textarea-with-label";
+import ButtonProfile from "./button-profile";
 
 type TCreateJobDialog = {
   jobData: Partial<TJobList>;
@@ -113,58 +114,44 @@ const CreateJobDialog = ({
           )}
         </div>
         <div className="flex items-center justify-between w-full gap-4">
-          <div className="flex flex-col gap-2 w-full">
-            <Label htmlFor="" className="text-xs">
-              Minimum Estimated Salary
-            </Label>
-            <InputGroup>
-              <InputGroupInput
-                id="minimumSalary"
-                name="minimumSalary"
-                type="text"
-                placeholder="7.000.000"
-                className="pl-1!"
-                value={
-                  jobData.minimumSalary === 0
-                    ? ""
-                    : new Intl.NumberFormat("id-ID").format(
-                        jobData.minimumSalary as number
-                      )
-                }
-                onChange={handleOnChange}
-              />
-              <InputGroupAddon>
-                <InputGroupText className="font-bold text-black">
-                  Rp
-                </InputGroupText>
-              </InputGroupAddon>
-            </InputGroup>
-          </div>
-          <div className="flex flex-col gap-2 w-full">
-            <Label className="text-xs">Maximum Estimated Salary</Label>
-            <InputGroup>
-              <InputGroupInput
-                id="maximumSalary"
-                name="maximumSalary"
-                type="text"
-                placeholder="8.000.000"
-                className="pl-1!"
-                value={
-                  jobData.maximumSalary === 0
-                    ? ""
-                    : new Intl.NumberFormat("id-ID").format(
-                        jobData.maximumSalary as number
-                      )
-                }
-                onChange={handleOnChange}
-              />
-              <InputGroupAddon>
-                <InputGroupText className="font-bold text-black">
-                  Rp
-                </InputGroupText>
-              </InputGroupAddon>
-            </InputGroup>
-          </div>
+          <InputLabel
+            inputId="minimumSalary"
+            name="minimumSalary"
+            inputType="text"
+            label="Minimum Estimated Salary"
+            placeholder="7.000.000"
+            prefix="Rp"
+            errorMsg={errorMsg.minimumSalary}
+            noErrorText={true}
+            className="pl-1!"
+            value={
+              jobData.minimumSalary === 0
+                ? ""
+                : new Intl.NumberFormat("id-ID").format(
+                    jobData.minimumSalary as number
+                  )
+            }
+            onChange={handleOnChange}
+          />
+          <InputLabel
+            label="Maximum Estimated Salary"
+            inputId="maximumSalary"
+            name="maximumSalary"
+            inputType="text"
+            placeholder="8.000.000"
+            prefix="Rp"
+            errorMsg={errorMsg.maximumSalary}
+            noErrorText={true}
+            className="pl-1!"
+            value={
+              jobData.maximumSalary === 0
+                ? ""
+                : new Intl.NumberFormat("id-ID").format(
+                    jobData.maximumSalary as number
+                  )
+            }
+            onChange={handleOnChange}
+          />
         </div>
       </div>
       <Card className="w-full">
@@ -194,44 +181,20 @@ const CreateJobDialog = ({
                 )}
 
                 <div className="flex justify-between gap-2">
-                  <Button
-                    type="button"
-                    variant={"outline"}
-                    className={`${
-                      item.reqStatus === "mandatory"
-                        ? "border-[#01959F] text-[#01959F] hover:text-[#01959F]"
-                        : "border-gray-400 rounded-full text-gray-600"
-                    } rounded-full`}
-                    onClick={() => handleButtonProfile("mandatory", idx)}
-                  >
-                    Mandatory
-                  </Button>
-                  <Button
-                    type="button"
-                    disabled={item.isMustMandatory}
-                    variant={"outline"}
-                    className={`${
-                      item.reqStatus === "optional"
-                        ? "border-[#01959F] text-[#01959F] hover:text-[#01959F]"
-                        : "border-gray-400 rounded-full text-gray-600"
-                    } rounded-full`}
-                    onClick={() => handleButtonProfile("optional", idx)}
-                  >
-                    Optional
-                  </Button>
-                  <Button
-                    type="button"
-                    disabled={item.isMustMandatory}
-                    variant={"outline"}
-                    className={`${
-                      item.reqStatus === "off"
-                        ? "border-[#01959F] text-[#01959F] hover:text-[#01959F]"
-                        : "border-gray-400 rounded-full text-gray-600"
-                    } rounded-full`}
-                    onClick={() => handleButtonProfile("off", idx)}
-                  >
-                    Off
-                  </Button>
+                  {["mandatory", "optional", "off"].map((text, i) => (
+                    <ButtonProfile
+                      key={i}
+                      reqStatus={item.reqStatus}
+                      textStatus={text}
+                      errorMsg={errorMsg[item.slug as keyof TErrorMsg]}
+                      onClick={() =>
+                        handleButtonProfile(
+                          text as "mandatory" | "optional" | "off",
+                          idx
+                        )
+                      }
+                    />
+                  ))}
                 </div>
               </div>
             ))}

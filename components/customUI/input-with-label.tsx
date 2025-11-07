@@ -13,6 +13,8 @@ interface TInputLabel extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   placeholder?: string;
   errorMsg?: string;
+  prefix?: string;
+  noErrorText?: boolean;
 }
 
 const InputLabel = ({
@@ -20,11 +22,13 @@ const InputLabel = ({
   inputType,
   label,
   placeholder,
-  errorMsg,
+  errorMsg = "",
+  prefix = "",
+  noErrorText = false,
   ...props
 }: TInputLabel) => {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 w-full">
       <Label htmlFor={inputId} className="font-normal text-xs">
         {label}
       </Label>
@@ -37,7 +41,14 @@ const InputLabel = ({
           placeholder={placeholder}
           {...props}
         />
-        {errorMsg && errorMsg !== "" && (
+        {prefix !== "" && (
+          <InputGroupAddon>
+            <InputGroupText className="font-bold text-black">
+              {prefix}
+            </InputGroupText>
+          </InputGroupAddon>
+        )}
+        {!noErrorText && errorMsg && errorMsg !== "" && (
           <InputGroupAddon align="inline-end">
             <InputGroupText className="text-red-500 text-xs">
               {errorMsg}

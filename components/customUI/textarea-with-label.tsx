@@ -11,7 +11,7 @@ interface TTextArea extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   id: string;
   name: string;
   placeholder: string;
-  errorMsg: string;
+  errorMsg?: string;
   label: string;
 }
 
@@ -19,7 +19,7 @@ const TextAreaLabel = ({
   id,
   name,
   placeholder,
-  errorMsg,
+  errorMsg = "",
   label,
   ...props
 }: TTextArea) => {
@@ -35,6 +35,7 @@ const TextAreaLabel = ({
           name={name}
           {...props}
         />
+
         {errorMsg === "" ? (
           <InputGroupAddon align="block-end">
             <InputGroupText className="text-transparent text-xs ml-auto">
