@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import { startCreateJobValue, startErrorMsg } from "./_const/const";
 import { regexDecimalOnly } from "@/lib/regex";
 import { titleCase } from "@/lib/titleCase";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 export type TErrorMsg = {
   jobName: string;
@@ -81,17 +82,26 @@ const AdminHome = () => {
   const handleOnChange = (
     e: ChangeEvent<HTMLInputElement> | string | ChangeEvent<HTMLTextAreaElement>
   ) => {
-    setErrorMsg(startErrorMsg);
     if (typeof e === "string") {
       setCreateJobData((prevValue) => ({
         ...prevValue,
         jobType: e,
+      }));
+
+      setErrorMsg((prevValue) => ({
+        ...prevValue,
+        jobType: "",
       }));
       return;
     }
 
     const key = e.target.name;
     let value: string | number = e.target.value;
+
+    setErrorMsg((prevValue) => ({
+      ...prevValue,
+      [key]: "",
+    }));
 
     if (
       (key === "minimumSalary" ||
@@ -284,10 +294,10 @@ const AdminHome = () => {
                   Create a new job
                 </Button>
               </DialogTrigger>
-              <DialogContent
-                className="sm:max-w-1/2"
-                aria-describedby="create job dialog"
-              >
+              <DialogContent className="sm:max-w-1/2">
+                <DialogDescription className="sr-only">
+                  Create job dialog
+                </DialogDescription>
                 <DialogHeader>
                   <DialogTitle>Job Opening</DialogTitle>
                 </DialogHeader>

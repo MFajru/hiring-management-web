@@ -184,6 +184,7 @@ const CreateJobDialog = ({
                   {["mandatory", "optional", "off"].map((text, i) => (
                     <ButtonProfile
                       key={i}
+                      disabled={item.isMustMandatory && text !== "mandatory"}
                       reqStatus={item.reqStatus}
                       textStatus={text}
                       errorMsg={errorMsg[item.slug as keyof TErrorMsg]}

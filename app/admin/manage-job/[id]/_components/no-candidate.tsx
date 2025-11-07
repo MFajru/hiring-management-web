@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const NoCandidate = () => {
   return (
-    <div className="w-full flex flex-col justify-center items-center">
+    <div className="w-full flex flex-col justify-center items-center mt-6">
       <Image
         src={"/empyCandidate.png"}
         alt="Empty candidate"

@@ -119,6 +119,67 @@
           "isMustMandatory": false
         }
       ]
+    },
+    {
+      "id": "10fc",
+      "jobName": "QA Analyst",
+      "jobType": "part-time",
+      "jobDesc": "Able to write testing",
+      "numOfCandidate": 10,
+      "minimumSalary": 20000000,
+      "maximumSalary": 25000000,
+      "createdDate": "2025-11-07T15:08:15+07:00",
+      "status": "active",
+      "requiredInfo": [
+        {
+          "name": "Full Name",
+          "slug": "fullName",
+          "reqStatus": "mandatory",
+          "isMustMandatory": true
+        },
+        {
+          "name": "Photo Profile",
+          "slug": "photoProfile",
+          "reqStatus": "mandatory",
+          "isMustMandatory": true
+        },
+        {
+          "name": "Gender",
+          "slug": "gender",
+          "reqStatus": "optional",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Domicile",
+          "slug": "domicile",
+          "reqStatus": "mandatory",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Email",
+          "slug": "email",
+          "reqStatus": "mandatory",
+          "isMustMandatory": true
+        },
+        {
+          "name": "Phone Number",
+          "slug": "phoneNumber",
+          "reqStatus": "mandatory",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Linkedin Link",
+          "slug": "linkedinLink",
+          "reqStatus": "optional",
+          "isMustMandatory": false
+        },
+        {
+          "name": "Date of Birth",
+          "slug": "dob",
+          "reqStatus": "mandatory",
+          "isMustMandatory": false
+        }
+      ]
     }
   ],
   "candidates": [
