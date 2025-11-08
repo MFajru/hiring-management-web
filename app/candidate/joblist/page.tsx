@@ -26,7 +26,7 @@ const CandidateJoblist = () => {
   }, []);
   return (
     <TopbarProvider>
-      <div className="h-screen overflow-hidden w-full">
+      <div className="h-screen lg:overflow-hidden w-full">
         <Topbar />
         <div className="flex flex-col items-center w-full ">
           {!jobList ? (
@@ -37,8 +37,8 @@ const CandidateJoblist = () => {
               bodyText="Please wait for the next batch of openings."
             ></NoJob>
           ) : (
-            <div className="flex gap-6 justify-center px-[104px] py-10 w-full h-screen">
-              <div className="w-[30%] overflow-auto h-full flex flex-col gap-4 pb-16">
+            <div className="flex flex-col lg:flex-row gap-6 justify-center px-[104px] py-10 w-full h-screen">
+              <div className="w-full lg:w-[30%] overflow-auto h-full flex lg:flex-col gap-4 lg:pb-16">
                 {(jobList as TJobList[]).map((job, idx) => (
                   <div
                     key={job.id}
@@ -78,7 +78,7 @@ const CandidateJoblist = () => {
                   </div>
                 ))}
               </div>
-              <div className="w-[70%] h-full overflow-auto pb-16">
+              <div className="w-full lg:w-[70%] h-full overflow-auto pb-16">
                 {clickedJobIdx === null ? (
                   <div></div>
                 ) : (
