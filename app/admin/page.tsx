@@ -6,7 +6,7 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Search } from "lucide-react";
-import NoJob from "./_components/no-job";
+import NoJob from "../../components/customUI/no-job";
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import CardJob from "./_components/card-job";
 import { useTopbar } from "@/context/topbarContext";
@@ -27,6 +27,7 @@ import { startCreateJobValue, startErrorMsg } from "./_const/const";
 import { regexDecimalOnly } from "@/lib/regex";
 import { titleCase } from "@/lib/titleCase";
 import { DialogDescription } from "@radix-ui/react-dialog";
+import { TJobList } from "@/types";
 
 export type TErrorMsg = {
   jobName: string;
@@ -40,26 +41,6 @@ export type TErrorMsg = {
   phoneNumber: string;
   linkedinLink: string;
   dob: string;
-};
-
-export type TProfileInfoReq = {
-  name: string;
-  slug: string;
-  reqStatus: "mandatory" | "optional" | "off" | "";
-  isMustMandatory: boolean;
-};
-
-export type TJobList = {
-  id: number;
-  jobName: string;
-  jobType: string;
-  jobDesc: string;
-  numOfCandidate: number;
-  minimumSalary: number;
-  maximumSalary: number;
-  createdDate: string;
-  status: string;
-  requiredInfo: TProfileInfoReq[];
 };
 
 const AdminHome = () => {
@@ -256,7 +237,20 @@ const AdminHome = () => {
         {jobList ? (
           <div className="flex flex-col items-center gap-4 w-full py-4">
             {(jobList as TJobList[]).length === 0 ? (
-              <NoJob setIsDialogOpen={setIsDialogOpen} />
+              <NoJob
+                headerText="No job openings available"
+                bodyText="Create a job opening now and start the candidate process."
+              >
+                <Button
+                  variant={"secondary"}
+                  id="createJob"
+                  name="createJob"
+                  className="text-black"
+                  onClick={() => setIsDialogOpen(true)}
+                >
+                  Create new job
+                </Button>
+              </NoJob>
             ) : (
               (jobList as TJobList[]).map((job) => (
                 <React.Fragment key={job.id}>

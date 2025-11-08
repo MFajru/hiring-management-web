@@ -1,5 +1,5 @@
 "use client";
-import { IBreadcrumb } from "@/types/components";
+import { IBreadcrumb } from "@/types";
 import { createContext, ReactNode, useContext, useState } from "react";
 
 type TopbarContextType = {

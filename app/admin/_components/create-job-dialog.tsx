@@ -1,15 +1,8 @@
 "use client";
 
 import InputLabel from "@/components/customUI/input-with-label";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-  InputGroupText,
-  InputGroupTextarea,
-} from "@/components/ui/input-group";
+
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -19,10 +12,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TErrorMsg, TJobList, TProfileInfoReq } from "../page";
+import { TErrorMsg } from "../page";
 import { ChangeEvent } from "react";
 import TextAreaLabel from "@/components/customUI/textarea-with-label";
 import ButtonProfile from "./button-profile";
+import { TJobList, TProfileInfoReq } from "@/types";
 
 type TCreateJobDialog = {
   jobData: Partial<TJobList>;

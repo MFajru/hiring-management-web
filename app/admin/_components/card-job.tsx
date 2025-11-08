@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import formatToIdr from "@/lib/formatToIdr";
 import moment from "moment";
 
 type TCardJob = {
@@ -33,15 +34,7 @@ const CardJob = ({
         <div className="flex flex-col gap-2">
           <h3 className="font-bold text-lg capitalize">{jobName}</h3>
           <p className="text-gray-600">
-            {new Intl.NumberFormat("id-ID", {
-              style: "currency",
-              currency: "IDR",
-            }).format(minSalary as number)}{" "}
-            -{" "}
-            {new Intl.NumberFormat("id-ID", {
-              style: "currency",
-              currency: "IDR",
-            }).format(maxSalary as number)}
+            {formatToIdr(minSalary)} - {formatToIdr(maxSalary)}
           </p>
         </div>
         <Button

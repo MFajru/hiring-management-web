@@ -23,7 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TCandidate } from "@/types/components";
+import { TCandidate } from "@/types";
 import Link from "next/link";
 import { useTopbar } from "@/context/topbarContext";
 import { useEffect, useState } from "react";

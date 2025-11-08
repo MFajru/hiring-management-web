@@ -7,7 +7,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "../ui/breadcrumb";
-import { IBreadcrumb } from "@/types/components";
+import { IBreadcrumb } from "@/types";
 import { useTopbar } from "@/context/topbarContext";
 import React from "react";
 
