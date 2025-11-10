@@ -1,18 +1,48 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Upload } from "lucide-react";
+import { ArrowLeft, ChevronRight, Upload } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 const ApplyJob = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [photoUrl, setPhotoUrl] = useState<string>();
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [stream, setStream] = useState<MediaStream>();
+
+  const capturePhoto = () => {
+    if (canvasRef.current && videoRef.current) {
+      canvasRef.current.width = videoRef.current.videoWidth;
+      canvasRef.current.height = videoRef.current.videoHeight;
+
+      canvasRef.current.getContext("2d")?.drawImage(videoRef.current, 0, 0);
+
+      const photoDataUrl = canvasRef.current.toDataURL("image/jpeg");
+      setPhotoUrl(photoDataUrl);
+    }
+  };
 
   const startWebcam = async () => {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
+        video: {
+          width: videoRef.current?.width,
+          height: videoRef.current?.height,
+        },
       });
+      setStream(mediaStream);
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
       }
@@ -20,6 +50,25 @@ const ApplyJob = () => {
       console.error("Error accessing webcam:", error);
     }
   };
+
+  useEffect(() => {
+    if (!isDialogOpen && videoRef.current && stream) {
+      const tracks = stream.getTracks();
+      if (tracks) {
+        tracks.forEach((track) => track.stop());
+      }
+      videoRef.current.srcObject = null;
+    }
+  }, [isDialogOpen, stream]);
+
+  useEffect(() => {
+    console.log(
+      "height",
+      videoRef.current?.height,
+      "width",
+      videoRef.current?.width
+    );
+  });
 
   return (
     <div className="w-screen h-screen bg-[#FAFAFA] flex items-center justify-center py-[50px]">
@@ -42,14 +91,14 @@ const ApplyJob = () => {
                 width={128}
               />
             </div>
-            <div className="flex flex-col">
+            {/* <div className="flex flex-col">
               <h1>Webcam Capture</h1>
 
               <video
                 ref={videoRef}
-                width={570}
-                height={428}
-                className="border"
+                width={400}
+                height={200}
+                className="border -scale-x-100"
                 id="videoElement"
                 autoPlay
               ></video>
@@ -57,18 +106,93 @@ const ApplyJob = () => {
               <button id="startButton" onClick={() => startWebcam()}>
                 Start Webcam
               </button>
-              <button id="captureButton">Capture Photo</button>
-              <canvas id="canvasElement" className="hidden"></canvas>
-              <Image
-                src={"/avatarMale.png"}
-                alt="test"
-                width={100}
-                height={100}
-                id="photoElement"
+              <button id="captureButton" onClick={() => capturePhoto()}>
+                Capture Photo
+              </button>
+              <canvas
+                ref={canvasRef}
+                id="canvasElement"
                 className="hidden"
-              ></Image>
-            </div>
-            <div>
+              ></canvas>
+              {photoUrl && (
+                <Image
+                  src={photoUrl}
+                  alt="test"
+                  width={400}
+                  height={200}
+                  id="photoElement"
+                  className="-scale-x-100"
+                />
+              )}
+            </div> */}
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  id="takePicture"
+                  name="takePicture"
+                  variant="outline"
+                  className="w-fit"
+                  onClick={() => startWebcam()}
+                >
+                  <div className="flex gap-1 justify-center items-center">
+                    <Upload width={16} height={16} strokeWidth={3} />
+                    <p className="text-sm font-bold">Take a picture</p>
+                  </div>
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-1/2">
+                <DialogDescription className="sr-only">
+                  Take a picture
+                </DialogDescription>
+                <DialogHeader>
+                  <DialogTitle>Raise Your Head to Capture</DialogTitle>
+                </DialogHeader>
+                <div className="flex flex-col justify-center items-center w-full gap-4">
+                  <video
+                    ref={videoRef}
+                    width={589}
+                    height={400}
+                    className="border -scale-x-100"
+                    id="videoElement"
+                    autoPlay
+                  />
+                  <p className="text-xs text-[#1D1F20]">
+                    To take a picture, follow the hand poses in the order shown
+                    below. The system will automatically capture the image once
+                    the final pose is detected.
+                  </p>
+                  <div className="flex gap-2 w-full justify-center items-center">
+                    <Image
+                      src="/openCamera3.png"
+                      width={57}
+                      height={57}
+                      alt="three hand gesture"
+                    />
+                    <ChevronRight />
+                    <Image
+                      src="/openCamera2.png"
+                      width={57}
+                      height={57}
+                      alt="two hand gesture"
+                    />
+                    <ChevronRight />
+                    <Image
+                      src="/openCamera1.png"
+                      width={57}
+                      height={57}
+                      alt="one hand gesture"
+                    />
+                  </div>
+                </div>
+
+                <DialogFooter>
+                  <div className="w-full flex justify-end mt-2">
+                    <Button type="submit">Publish Job</Button>
+                  </div>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            {/* <div>
               <Label htmlFor="photoProfile">
                 <div className="flex gap-1 border px-4 py-1 rounded-md justify-center items-center shadow-2xs cursor-pointer">
                   <Upload width={16} height={16} strokeWidth={3} />
@@ -83,7 +207,7 @@ const ApplyJob = () => {
                 accept="image/*"
                 capture="user"
               />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
