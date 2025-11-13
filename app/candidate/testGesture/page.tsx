@@ -4,76 +4,195 @@ import React, { useEffect, useRef, useState } from "react";
 import * as tf from "@tensorflow/tfjs";
 import * as handpose from "@tensorflow-models/handpose";
 import * as fp from "fingerpose";
+import { Button } from "@/components/ui/button";
 
 export default function TestGesture() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [gesture, setGesture] = useState<string>("");
 
+  const startVideo = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+      });
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+
+        // wait until video metadata is loaded, then play
+        await new Promise((resolve) => {
+          videoRef.current!.onloadedmetadata = () => {
+            videoRef.current!.play();
+            resolve(true);
+          };
+        });
+
+        console.log("✅ Webcam started.");
+      }
+    } catch (err) {
+      console.error("❌ Error accessing webcam:", err);
+    }
+  };
+
+  const stopWebcam = () => {
+    if (videoRef.current && videoRef.current.srcObject) {
+      const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
+      tracks.forEach((track) => track.stop());
+    }
+  };
+
+  const numberOneGesture = (numberOneGesture: fp.GestureDescription) => {
+    numberOneGesture.addCurl(fp.Finger.Index, fp.FingerCurl.NoCurl);
+    numberOneGesture.addDirection(
+      fp.Finger.Index,
+      fp.FingerDirection.VerticalUp,
+      1.0
+    );
+
+    numberOneGesture.addDirection(
+      fp.Finger.Index,
+      fp.FingerDirection.DiagonalUpLeft,
+      0.9
+    );
+    numberOneGesture.addDirection(
+      fp.Finger.Index,
+      fp.FingerDirection.DiagonalUpRight,
+      0.9
+    );
+
+    for (const finger of [
+      fp.Finger.Thumb,
+      fp.Finger.Middle,
+      fp.Finger.Ring,
+      fp.Finger.Pinky,
+    ]) {
+      numberOneGesture.addCurl(finger, fp.FingerCurl.FullCurl, 1.0);
+      numberOneGesture.addCurl(finger, fp.FingerCurl.HalfCurl, 0.9);
+    }
+  };
+
+  const numberTwoGesture = (numberTwoGesture: fp.GestureDescription) => {
+    numberTwoGesture.addCurl(fp.Finger.Index, fp.FingerCurl.NoCurl);
+    numberTwoGesture.addDirection(
+      fp.Finger.Index,
+      fp.FingerDirection.VerticalUp,
+      1.0
+    );
+    numberTwoGesture.addCurl(fp.Finger.Middle, fp.FingerCurl.NoCurl);
+    numberTwoGesture.addDirection(
+      fp.Finger.Middle,
+      fp.FingerDirection.VerticalUp,
+      1.0
+    );
+
+    numberTwoGesture.addDirection(
+      fp.Finger.Index,
+      fp.FingerDirection.DiagonalUpLeft,
+      0.9
+    );
+    numberTwoGesture.addDirection(
+      fp.Finger.Index,
+      fp.FingerDirection.DiagonalUpRight,
+      0.9
+    );
+
+    numberTwoGesture.addDirection(
+      fp.Finger.Middle,
+      fp.FingerDirection.DiagonalUpLeft,
+      0.9
+    );
+
+    numberTwoGesture.addDirection(
+      fp.Finger.Middle,
+      fp.FingerDirection.DiagonalUpRight,
+      0.9
+    );
+
+    for (const finger of [fp.Finger.Thumb, fp.Finger.Ring, fp.Finger.Pinky]) {
+      numberTwoGesture.addCurl(finger, fp.FingerCurl.FullCurl, 1.0);
+      numberTwoGesture.addCurl(finger, fp.FingerCurl.HalfCurl, 0.9);
+    }
+  };
+
+  const numberThreeGesture = (numberThreeGesture: fp.GestureDescription) => {
+    numberThreeGesture.addCurl(fp.Finger.Index, fp.FingerCurl.NoCurl);
+    numberThreeGesture.addDirection(
+      fp.Finger.Index,
+      fp.FingerDirection.VerticalUp,
+      1.0
+    );
+    numberThreeGesture.addCurl(fp.Finger.Middle, fp.FingerCurl.NoCurl);
+    numberThreeGesture.addDirection(
+      fp.Finger.Middle,
+      fp.FingerDirection.VerticalUp,
+      1.0
+    );
+    numberThreeGesture.addCurl(fp.Finger.Ring, fp.FingerCurl.NoCurl);
+    numberThreeGesture.addDirection(
+      fp.Finger.Ring,
+      fp.FingerDirection.VerticalUp,
+      1.0
+    );
+
+    numberThreeGesture.addDirection(
+      fp.Finger.Index,
+      fp.FingerDirection.DiagonalUpLeft,
+      0.9
+    );
+    numberThreeGesture.addDirection(
+      fp.Finger.Index,
+      fp.FingerDirection.DiagonalUpRight,
+      0.9
+    );
+
+    numberThreeGesture.addDirection(
+      fp.Finger.Middle,
+      fp.FingerDirection.DiagonalUpLeft,
+      0.9
+    );
+
+    numberThreeGesture.addDirection(
+      fp.Finger.Middle,
+      fp.FingerDirection.DiagonalUpRight,
+      0.9
+    );
+
+    numberThreeGesture.addDirection(
+      fp.Finger.Ring,
+      fp.FingerDirection.DiagonalUpLeft,
+      0.9
+    );
+
+    numberThreeGesture.addDirection(
+      fp.Finger.Ring,
+      fp.FingerDirection.DiagonalUpRight,
+      0.9
+    );
+
+    for (const finger of [fp.Finger.Thumb, fp.Finger.Pinky]) {
+      numberThreeGesture.addCurl(finger, fp.FingerCurl.FullCurl, 1.0);
+      numberThreeGesture.addCurl(finger, fp.FingerCurl.HalfCurl, 0.9);
+    }
+  };
+
   useEffect(() => {
     let model: handpose.HandPose | null = null;
 
-    const startVideo = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-        });
-
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-
-          // wait until video metadata is loaded, then play
-          await new Promise((resolve) => {
-            videoRef.current!.onloadedmetadata = () => {
-              videoRef.current!.play();
-              resolve(true);
-            };
-          });
-
-          console.log("✅ Webcam started.");
-        }
-      } catch (err) {
-        console.error("❌ Error accessing webcam:", err);
-      }
-    };
+    const oneGesture = new fp.GestureDescription("number_one");
+    const twoGesture = new fp.GestureDescription("number_two");
+    const threeGesture = new fp.GestureDescription("number_three");
+    numberOneGesture(oneGesture);
+    numberTwoGesture(twoGesture);
+    numberThreeGesture(threeGesture);
 
     const detectHands = async () => {
       if (!model || !videoRef.current) return;
 
-      const thumbsDownGesture = new fp.GestureDescription("number one_gesture");
-      thumbsDownGesture.addCurl(fp.Finger.Thumb, fp.FingerCurl.NoCurl);
-      thumbsDownGesture.addDirection(
-        fp.Finger.Thumb,
-        fp.FingerDirection.VerticalDown,
-        1.0
-      );
-
-      thumbsDownGesture.addDirection(
-        fp.Finger.Thumb,
-        fp.FingerDirection.DiagonalDownLeft,
-        0.9
-      );
-      thumbsDownGesture.addDirection(
-        fp.Finger.Thumb,
-        fp.FingerDirection.DiagonalDownRight,
-        0.9
-      );
-
-      // do this for all other fingers
-      for (const finger of [
-        fp.Finger.Index,
-        fp.Finger.Middle,
-        fp.Finger.Ring,
-        fp.Finger.Pinky,
-      ]) {
-        thumbsDownGesture.addCurl(finger, fp.FingerCurl.FullCurl, 1.0);
-        thumbsDownGesture.addCurl(finger, fp.FingerCurl.HalfCurl, 0.9);
-      }
-
       const GE = new fp.GestureEstimator([
-        fp.Gestures.VictoryGesture,
         fp.Gestures.ThumbsUpGesture,
-        thumbsDownGesture,
+        fp.Gestures.VictoryGesture,
+        oneGesture,
       ]);
 
       const ctx = canvasRef.current?.getContext("2d");
@@ -135,10 +254,7 @@ export default function TestGesture() {
 
     // Cleanup on unmount
     return () => {
-      if (videoRef.current?.srcObject) {
-        const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
-        tracks.forEach((track) => track.stop());
-      }
+      stopWebcam();
     };
   }, []);
 
@@ -165,6 +281,12 @@ export default function TestGesture() {
       <h1 className="text-2xl mt-4 font-semibold">
         {gesture ? `Detected: ${gesture}` : "No gesture detected"}
       </h1>
+      <Button variant={"outline"} onClick={() => startVideo()}>
+        Start webcam
+      </Button>
+      <Button variant={"outline"} onClick={() => stopWebcam()}>
+        Stop webcam
+      </Button>
     </div>
   );
 }
