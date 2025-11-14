@@ -1,10 +1,16 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as tf from "@tensorflow/tfjs";
 import * as handpose from "@tensorflow-models/handpose";
 import * as fp from "fingerpose";
 import { Button } from "@/components/ui/button";
+import {
+  numberOneGesture,
+  numberThreeGesture,
+  numberTwoGesture,
+} from "../_lib/gestures";
+import { Coords3D } from "@tensorflow-models/handpose/dist/pipeline";
 
 export default function TestGesture() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -20,14 +26,6 @@ export default function TestGesture() {
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
 
-        // wait until video metadata is loaded, then play
-        await new Promise((resolve) => {
-          videoRef.current!.onloadedmetadata = () => {
-            videoRef.current!.play();
-            resolve(true);
-          };
-        });
-
         console.log("✅ Webcam started.");
       }
     } catch (err) {
@@ -42,143 +40,7 @@ export default function TestGesture() {
     }
   };
 
-  const numberOneGesture = (numberOneGesture: fp.GestureDescription) => {
-    numberOneGesture.addCurl(fp.Finger.Index, fp.FingerCurl.NoCurl);
-    numberOneGesture.addDirection(
-      fp.Finger.Index,
-      fp.FingerDirection.VerticalUp,
-      1.0
-    );
-
-    numberOneGesture.addDirection(
-      fp.Finger.Index,
-      fp.FingerDirection.DiagonalUpLeft,
-      0.9
-    );
-    numberOneGesture.addDirection(
-      fp.Finger.Index,
-      fp.FingerDirection.DiagonalUpRight,
-      0.9
-    );
-
-    for (const finger of [
-      fp.Finger.Thumb,
-      fp.Finger.Middle,
-      fp.Finger.Ring,
-      fp.Finger.Pinky,
-    ]) {
-      numberOneGesture.addCurl(finger, fp.FingerCurl.FullCurl, 1.0);
-      numberOneGesture.addCurl(finger, fp.FingerCurl.HalfCurl, 0.9);
-    }
-  };
-
-  const numberTwoGesture = (numberTwoGesture: fp.GestureDescription) => {
-    numberTwoGesture.addCurl(fp.Finger.Index, fp.FingerCurl.NoCurl);
-    numberTwoGesture.addDirection(
-      fp.Finger.Index,
-      fp.FingerDirection.VerticalUp,
-      1.0
-    );
-    numberTwoGesture.addCurl(fp.Finger.Middle, fp.FingerCurl.NoCurl);
-    numberTwoGesture.addDirection(
-      fp.Finger.Middle,
-      fp.FingerDirection.VerticalUp,
-      1.0
-    );
-
-    numberTwoGesture.addDirection(
-      fp.Finger.Index,
-      fp.FingerDirection.DiagonalUpLeft,
-      0.9
-    );
-    numberTwoGesture.addDirection(
-      fp.Finger.Index,
-      fp.FingerDirection.DiagonalUpRight,
-      0.9
-    );
-
-    numberTwoGesture.addDirection(
-      fp.Finger.Middle,
-      fp.FingerDirection.DiagonalUpLeft,
-      0.9
-    );
-
-    numberTwoGesture.addDirection(
-      fp.Finger.Middle,
-      fp.FingerDirection.DiagonalUpRight,
-      0.9
-    );
-
-    for (const finger of [fp.Finger.Thumb, fp.Finger.Ring, fp.Finger.Pinky]) {
-      numberTwoGesture.addCurl(finger, fp.FingerCurl.FullCurl, 1.0);
-      numberTwoGesture.addCurl(finger, fp.FingerCurl.HalfCurl, 0.9);
-    }
-  };
-
-  const numberThreeGesture = (numberThreeGesture: fp.GestureDescription) => {
-    numberThreeGesture.addCurl(fp.Finger.Index, fp.FingerCurl.NoCurl);
-    numberThreeGesture.addDirection(
-      fp.Finger.Index,
-      fp.FingerDirection.VerticalUp,
-      1.0
-    );
-    numberThreeGesture.addCurl(fp.Finger.Middle, fp.FingerCurl.NoCurl);
-    numberThreeGesture.addDirection(
-      fp.Finger.Middle,
-      fp.FingerDirection.VerticalUp,
-      1.0
-    );
-    numberThreeGesture.addCurl(fp.Finger.Ring, fp.FingerCurl.NoCurl);
-    numberThreeGesture.addDirection(
-      fp.Finger.Ring,
-      fp.FingerDirection.VerticalUp,
-      1.0
-    );
-
-    numberThreeGesture.addDirection(
-      fp.Finger.Index,
-      fp.FingerDirection.DiagonalUpLeft,
-      0.9
-    );
-    numberThreeGesture.addDirection(
-      fp.Finger.Index,
-      fp.FingerDirection.DiagonalUpRight,
-      0.9
-    );
-
-    numberThreeGesture.addDirection(
-      fp.Finger.Middle,
-      fp.FingerDirection.DiagonalUpLeft,
-      0.9
-    );
-
-    numberThreeGesture.addDirection(
-      fp.Finger.Middle,
-      fp.FingerDirection.DiagonalUpRight,
-      0.9
-    );
-
-    numberThreeGesture.addDirection(
-      fp.Finger.Ring,
-      fp.FingerDirection.DiagonalUpLeft,
-      0.9
-    );
-
-    numberThreeGesture.addDirection(
-      fp.Finger.Ring,
-      fp.FingerDirection.DiagonalUpRight,
-      0.9
-    );
-
-    for (const finger of [fp.Finger.Thumb, fp.Finger.Pinky]) {
-      numberThreeGesture.addCurl(finger, fp.FingerCurl.FullCurl, 1.0);
-      numberThreeGesture.addCurl(finger, fp.FingerCurl.HalfCurl, 0.9);
-    }
-  };
-
-  useEffect(() => {
-    let model: handpose.HandPose | null = null;
-
+  const gestureGenerator = () => {
     const oneGesture = new fp.GestureDescription("number_one");
     const twoGesture = new fp.GestureDescription("number_two");
     const threeGesture = new fp.GestureDescription("number_three");
@@ -186,76 +48,85 @@ export default function TestGesture() {
     numberTwoGesture(twoGesture);
     numberThreeGesture(threeGesture);
 
-    const detectHands = async () => {
-      if (!model || !videoRef.current) return;
+    return [oneGesture, twoGesture, threeGesture];
+  };
 
-      const GE = new fp.GestureEstimator([
-        fp.Gestures.ThumbsUpGesture,
-        fp.Gestures.VictoryGesture,
-        oneGesture,
-      ]);
+  const drawLandmarks = (
+    landmarks: Coords3D,
+    ctx: CanvasRenderingContext2D
+  ) => {
+    for (let i = 0; i < landmarks.length; i++) {
+      const [x, y] = landmarks[i];
 
-      const ctx = canvasRef.current?.getContext("2d");
-      if (!ctx) return;
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, 3 * Math.PI);
+      ctx.fillStyle = "red";
+      ctx.fill();
+    }
+  };
 
-      const loop = async () => {
-        if (videoRef.current && videoRef.current.readyState === 4) {
-          const predictions = await model!.estimateHands(videoRef.current);
-          ctx.clearRect(
-            0,
-            0,
-            canvasRef.current!.width,
-            canvasRef.current!.height
-          );
+  let model: handpose.HandPose | null = null;
+  const gestures = gestureGenerator();
 
-          if (predictions.length > 0) {
-            const landmarks = predictions[0].landmarks;
+  const detectHands = async () => {
+    if (!model || !videoRef.current) return;
 
-            // draw landmarks
-            for (let i = 0; i < landmarks.length; i++) {
-              const [x, y] = landmarks[i];
+    const GE = new fp.GestureEstimator(gestures);
 
-              ctx.beginPath();
-              ctx.arc(x, y, 5, 0, 3 * Math.PI);
-              ctx.fillStyle = "red";
-              ctx.fill();
-            }
+    const ctx = canvasRef.current?.getContext("2d");
+    if (!ctx) return;
 
-            // detect gesture
-            const gestureEstimate = GE.estimate(landmarks, 8.5);
+    const loop = async () => {
+      if (videoRef.current && videoRef.current.readyState === 4) {
+        const predictions = await model!.estimateHands(videoRef.current);
+        ctx.clearRect(
+          0,
+          0,
+          canvasRef.current!.width,
+          canvasRef.current!.height
+        );
 
-            if (gestureEstimate?.gestures?.length) {
-              const gestures = gestureEstimate.gestures;
-              const maxConfidenceGesture = gestures.reduce((prev, current) =>
-                prev.score > current.score ? prev : current
-              );
-              setGesture(maxConfidenceGesture.name);
-            } else {
-              setGesture("");
-            }
+        if (predictions.length > 0) {
+          const landmarks = predictions[0].landmarks;
+
+          drawLandmarks(landmarks, ctx);
+
+          const gestureEstimate = GE.estimate(landmarks as never, 8.5);
+
+          if (gestureEstimate?.gestures?.length) {
+            const gestures = gestureEstimate.gestures;
+            const maxConfidenceGesture = gestures.reduce((prev, current) =>
+              prev.score > current.score ? prev : current
+            );
+            setGesture(maxConfidenceGesture.name);
+          } else {
+            setGesture("");
           }
         }
+      }
 
-        requestAnimationFrame(loop);
-      };
-
-      loop();
+      requestAnimationFrame(loop);
     };
 
-    const run = async () => {
-      await tf.ready();
-      await startVideo();
-      model = await handpose.load();
-      console.log("✅ Handpose model loaded.");
-      detectHands();
-    };
+    loop();
+  };
 
+  const run = async () => {
+    await tf.ready();
+    await startVideo();
+    model = await handpose.load();
+    console.log("✅ Handpose model loaded.");
+    detectHands();
+  };
+
+  useEffect(() => {
     run();
 
     // Cleanup on unmount
     return () => {
       stopWebcam();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
