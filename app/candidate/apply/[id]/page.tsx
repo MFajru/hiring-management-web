@@ -1,4 +1,7 @@
 "use client";
+import * as fp from "fingerpose";
+import * as handpose from "@tensorflow-models/handpose";
+import * as tf from "@tensorflow/tfjs";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,87 +12,168 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { ArrowLeft, ChevronRight, Upload } from "lucide-react";
 import Image from "next/image";
-import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
+import { gestureGenerator } from "../../_lib/gestures";
+import { Coords3D } from "@tensorflow-models/handpose/dist/pipeline";
+
+type gestures = {
+  numberOne: boolean;
+  numberTwo: boolean;
+  numberThree: boolean;
+};
 
 const ApplyJob = () => {
+  const gestures = gestureGenerator();
+
+  const isPhotoTakenRef = useRef<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [photoUrl, setPhotoUrl] = useState<string>();
+  const canvasPhotoRef = useRef<HTMLCanvasElement>(null);
+  const [photoUrl, setPhotoUrl] = useState<string>("");
+  // const [isPhotoTaken, setIsPhotoTaken] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [stream, setStream] = useState<MediaStream>();
+  const [gesturesPerformed, setGesturesPerformed] = useState<gestures>({
+    numberOne: false,
+    numberTwo: false,
+    numberThree: false,
+  });
 
   const capturePhoto = () => {
-    if (canvasRef.current && videoRef.current) {
-      canvasRef.current.width = videoRef.current.videoWidth;
-      canvasRef.current.height = videoRef.current.videoHeight;
+    if (canvasPhotoRef.current && videoRef.current) {
+      canvasPhotoRef.current.width = videoRef.current.videoWidth;
+      canvasPhotoRef.current.height = videoRef.current.videoHeight;
 
-      canvasRef.current.getContext("2d")?.drawImage(videoRef.current, 0, 0);
+      canvasPhotoRef.current
+        .getContext("2d")
+        ?.drawImage(videoRef.current, 0, 0);
 
-      const photoDataUrl = canvasRef.current.toDataURL("image/jpeg");
+      const photoDataUrl = canvasPhotoRef.current.toDataURL("image/jpeg");
       setPhotoUrl(photoDataUrl);
+      setGesturesPerformed({
+        numberOne: false,
+        numberTwo: false,
+        numberThree: false,
+      });
+      isPhotoTakenRef.current = false;
     }
   };
 
   const startWebcam = async () => {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          width: videoRef.current?.width,
-          height: videoRef.current?.height,
-        },
+        video: true,
       });
-      setStream(mediaStream);
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
       }
+      console.log("Webcam started.");
     } catch (error) {
       console.error("Error accessing webcam:", error);
     }
   };
 
-  // const handleGesture = () => {
-  //   // add "✌🏻" and "👍" as sample gestures
-  //   const GE = new fp.GestureEstimator([
-  //     fp.Gestures.VictoryGesture,
-  //     fp.Gestures.ThumbsUpGesture,
-  //   ]);
-  // };
-
-  useEffect(() => {
-    if (!isDialogOpen && videoRef.current && stream) {
-      const tracks = stream.getTracks();
-      if (tracks) {
-        tracks.forEach((track) => track.stop());
-      }
-      videoRef.current.srcObject = null;
+  const stopWebcam = () => {
+    if (videoRef.current && videoRef.current.srcObject) {
+      const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
+      tracks.forEach((track) => track.stop());
     }
-  }, [isDialogOpen, stream]);
+    isPhotoTakenRef.current = false;
+  };
+
+  const drawLandmarks = (
+    landmarks: Coords3D,
+    ctx: CanvasRenderingContext2D
+  ) => {
+    for (let i = 0; i < landmarks.length; i++) {
+      const [x, y] = landmarks[i];
+
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, 3 * Math.PI);
+      ctx.fillStyle = "red";
+      ctx.fill();
+    }
+  };
+
+  const detectHands = async (model: handpose.HandPose | null) => {
+    if (!model || !videoRef.current) return;
+
+    const GE = new fp.GestureEstimator(gestures);
+
+    const ctx = canvasRef.current?.getContext("2d");
+    if (!ctx) return;
+
+    const loop = async () => {
+      if (videoRef.current && videoRef.current.readyState === 4) {
+        const predictions = await model!.estimateHands(videoRef.current);
+        ctx.clearRect(
+          0,
+          0,
+          canvasRef.current!.width,
+          canvasRef.current!.height
+        );
+
+        if (predictions.length > 0) {
+          const landmarks = predictions[0].landmarks;
+
+          drawLandmarks(landmarks, ctx);
+
+          const gestureEstimate = GE.estimate(landmarks as never, 8.5);
+
+          if (gestureEstimate?.gestures?.length) {
+            const gestures = gestureEstimate.gestures;
+            const maxConfidenceGesture = gestures.reduce((prev, current) =>
+              prev.score > current.score ? prev : current
+            );
+
+            if (
+              !gesturesPerformed[maxConfidenceGesture.name as keyof gestures]
+            ) {
+              setGesturesPerformed((prev) => ({
+                ...prev,
+                [maxConfidenceGesture.name]: true,
+              }));
+            }
+          }
+        }
+      }
+
+      requestAnimationFrame(loop);
+    };
+
+    loop();
+  };
+
+  const takeAPhoto = async () => {
+    await tf.ready();
+    const model = await handpose.load();
+    console.log("✅ Handpose model loaded.");
+    await startWebcam();
+    detectHands(model);
+  };
 
   useEffect(() => {
-    console.log(
-      "height",
-      videoRef.current?.height,
-      "width",
-      videoRef.current?.width
-    );
-  });
+    if (!isDialogOpen && videoRef.current) {
+      stopWebcam();
+    }
+  }, [isDialogOpen]);
+
+  useEffect(() => {
+    if (
+      gesturesPerformed.numberOne &&
+      gesturesPerformed.numberTwo &&
+      gesturesPerformed.numberThree &&
+      !isPhotoTakenRef.current
+    ) {
+      isPhotoTakenRef.current = true;
+      setTimeout(capturePhoto, 3000);
+      console.log("duar", gesturesPerformed);
+    }
+  }, [gesturesPerformed]);
 
   return (
     <>
-      <Script src="https://unpkg.com/@tensorflow/tfjs-core@3.7.0/dist/tf-core.js"></Script>
-      <Script src="https://unpkg.com/@tensorflow/tfjs-converter@3.7.0/dist/tf-converter.js"></Script>
-
-      <Script src="https://unpkg.com/@tensorflow/tfjs-backend-webgl@3.7.0/dist/tf-backend-webgl.js"></Script>
-
-      <Script src="https://unpkg.com/@tensorflow-models/handpose@0.0.7/dist/handpose.js"></Script>
-
-      <Script src="fingerpose.js" type="text/javascript"></Script>
-
       <div className="w-screen h-screen bg-[#FAFAFA] flex items-center justify-center py-[50px]">
         <div className="flex flex-col bg-white h-full w-[700px] p-10 border gap-6">
           <div className="flex gap-4">
@@ -108,42 +192,9 @@ const ApplyJob = () => {
                   alt="avatar picture"
                   height={128}
                   width={128}
+                  loading="eager"
                 />
               </div>
-              {/* <div className="flex flex-col">
-              <h1>Webcam Capture</h1>
-
-              <video
-                ref={videoRef}
-                width={400}
-                height={200}
-                className="border -scale-x-100"
-                id="videoElement"
-                autoPlay
-              ></video>
-
-              <button id="startButton" onClick={() => startWebcam()}>
-                Start Webcam
-              </button>
-              <button id="captureButton" onClick={() => capturePhoto()}>
-                Capture Photo
-              </button>
-              <canvas
-                ref={canvasRef}
-                id="canvasElement"
-                className="hidden"
-              ></canvas>
-              {photoUrl && (
-                <Image
-                  src={photoUrl}
-                  alt="test"
-                  width={400}
-                  height={200}
-                  id="photoElement"
-                  className="-scale-x-100"
-                />
-              )}
-            </div> */}
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
                   <Button
@@ -151,7 +202,7 @@ const ApplyJob = () => {
                     name="takePicture"
                     variant="outline"
                     className="w-fit"
-                    onClick={() => startWebcam()}
+                    onClick={() => takeAPhoto()}
                   >
                     <div className="flex gap-1 justify-center items-center">
                       <Upload width={16} height={16} strokeWidth={3} />
@@ -167,14 +218,25 @@ const ApplyJob = () => {
                     <DialogTitle>Raise Your Head to Capture</DialogTitle>
                   </DialogHeader>
                   <div className="flex flex-col justify-center items-center w-full gap-4">
-                    <video
-                      ref={videoRef}
-                      width={560}
-                      height={315}
-                      className="border -scale-x-100"
-                      id="videoElement"
-                      autoPlay
-                    />
+                    <div className="relative">
+                      <video
+                        ref={videoRef}
+                        width={640}
+                        height={480}
+                        className="border -scale-x-100"
+                        id="videoElement"
+                        autoPlay
+                        playsInline
+                        muted
+                      />
+                      <canvas
+                        ref={canvasRef}
+                        width={640}
+                        height={480}
+                        className="w-full h-full absolute top-0 left-0 border rounded-md -scale-x-100"
+                      />
+                    </div>
+
                     <p className="text-xs text-[#1D1F20]">
                       To take a picture, follow the hand poses in the order
                       shown below. The system will automatically capture the
@@ -211,24 +273,23 @@ const ApplyJob = () => {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
-              {/* <div>
-              <Label htmlFor="photoProfile">
-                <div className="flex gap-1 border px-4 py-1 rounded-md justify-center items-center shadow-2xs cursor-pointer">
-                  <Upload width={16} height={16} strokeWidth={3} />
-                  <p className="text-sm font-bold">Take a picture</p>
-                </div>
-              </Label>
-              <Input
-                type="file"
-                id="photoProfile"
-                name="photoProfile"
-                className="w-fit hidden"
-                accept="image/*"
-                capture="user"
-              />
-            </div> */}
             </div>
           </div>
+          <canvas
+            ref={canvasPhotoRef}
+            id="canvasElement"
+            className="hidden"
+          ></canvas>
+          {photoUrl !== "" && (
+            <Image
+              src={photoUrl}
+              alt="test"
+              width={200}
+              height={150}
+              id="photoElement"
+              className="-scale-x-100 "
+            />
+          )}
         </div>
       </div>
     </>

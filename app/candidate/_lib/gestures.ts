@@ -26,7 +26,7 @@ export const numberOneGesture = (numberOneGesture: fp.GestureDescription) => {
     fp.Finger.Pinky,
   ]) {
     numberOneGesture.addCurl(finger, fp.FingerCurl.FullCurl, 1.0);
-    numberOneGesture.addCurl(finger, fp.FingerCurl.HalfCurl, 0.9);
+    numberOneGesture.addCurl(finger, fp.FingerCurl.HalfCurl, 0.5);
   }
 };
 
@@ -69,7 +69,7 @@ export const numberTwoGesture = (numberTwoGesture: fp.GestureDescription) => {
 
   for (const finger of [fp.Finger.Thumb, fp.Finger.Ring, fp.Finger.Pinky]) {
     numberTwoGesture.addCurl(finger, fp.FingerCurl.FullCurl, 1.0);
-    numberTwoGesture.addCurl(finger, fp.FingerCurl.HalfCurl, 0.9);
+    numberTwoGesture.addCurl(finger, fp.FingerCurl.HalfCurl, 0.5);
   }
 };
 
@@ -132,5 +132,17 @@ export const numberThreeGesture = (
 
   for (const finger of [fp.Finger.Thumb, fp.Finger.Pinky]) {
     numberThreeGesture.addCurl(finger, fp.FingerCurl.FullCurl, 1.0);
+    numberThreeGesture.addCurl(finger, fp.FingerCurl.HalfCurl, 0.9);
   }
+};
+
+export const gestureGenerator = () => {
+  const oneGesture = new fp.GestureDescription("numberOne");
+  const twoGesture = new fp.GestureDescription("numberTwo");
+  const threeGesture = new fp.GestureDescription("numberThree");
+  numberOneGesture(oneGesture);
+  numberTwoGesture(twoGesture);
+  numberThreeGesture(threeGesture);
+
+  return [oneGesture, twoGesture, threeGesture];
 };
