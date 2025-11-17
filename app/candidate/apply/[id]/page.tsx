@@ -31,14 +31,26 @@ const ApplyJob = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasPhotoRef = useRef<HTMLCanvasElement>(null);
+  const [remainingSec, setRemainingSec] = useState<number>(3);
   const [photoUrl, setPhotoUrl] = useState<string>("");
-  // const [isPhotoTaken, setIsPhotoTaken] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [gesturesPerformed, setGesturesPerformed] = useState<gestures>({
     numberOne: false,
     numberTwo: false,
     numberThree: false,
   });
+
+  const countdown = () => {
+    let remainingSec = 3;
+
+    const timer = setInterval(() => {
+      remainingSec--;
+      setRemainingSec(remainingSec);
+      if (remainingSec <= 0) {
+        clearInterval(timer);
+      }
+    }, 1000);
+  };
 
   const capturePhoto = () => {
     if (canvasPhotoRef.current && videoRef.current) {
@@ -57,6 +69,7 @@ const ApplyJob = () => {
         numberThree: false,
       });
       isPhotoTakenRef.current = false;
+      setRemainingSec(3);
     }
   };
 
@@ -166,6 +179,7 @@ const ApplyJob = () => {
       gesturesPerformed.numberThree &&
       !isPhotoTakenRef.current
     ) {
+      countdown();
       isPhotoTakenRef.current = true;
       setTimeout(capturePhoto, 3000);
       console.log("duar", gesturesPerformed);
@@ -188,11 +202,14 @@ const ApplyJob = () => {
               <h5 className="font-bold text-xs capitalize">Photo profile</h5>
               <div>
                 <Image
-                  src={"/avatarMale.png"}
+                  src={photoUrl !== "" ? photoUrl : "/avatarMale.png"}
                   alt="avatar picture"
                   height={128}
                   width={128}
                   loading="eager"
+                  className={`rounded-full w-32 h-32 object-cover ${
+                    photoUrl !== "" ? "-scale-x-100" : ""
+                  }`}
                 />
               </div>
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -235,6 +252,16 @@ const ApplyJob = () => {
                         height={480}
                         className="w-full h-full absolute top-0 left-0 border rounded-md -scale-x-100"
                       />
+                      {isPhotoTakenRef.current && (
+                        <>
+                          <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30"></div>
+                          <div className="flex justify-center items-center absolute top-0 left-0 w-full h-full">
+                            <p className="text-4xl text-center text-white">
+                              {remainingSec}
+                            </p>
+                          </div>
+                        </>
+                      )}
                     </div>
 
                     <p className="text-xs text-[#1D1F20]">
@@ -280,16 +307,6 @@ const ApplyJob = () => {
             id="canvasElement"
             className="hidden"
           ></canvas>
-          {photoUrl !== "" && (
-            <Image
-              src={photoUrl}
-              alt="test"
-              width={200}
-              height={150}
-              id="photoElement"
-              className="-scale-x-100 "
-            />
-          )}
         </div>
       </div>
     </>
