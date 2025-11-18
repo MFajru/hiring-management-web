@@ -17,6 +17,24 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { gestureGenerator } from "../../_lib/gestures";
 import { Coords3D } from "@tensorflow-models/handpose/dist/pipeline";
+import InputLabel from "@/components/customUI/input-with-label";
+import DatePicker from "@/components/customUI/date-picker";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupText,
+} from "@/components/ui/input-group";
 
 type TGestures = {
   numberOne: boolean;
@@ -199,15 +217,19 @@ const ApplyJob = () => {
   }, [gesturesPerformed]);
 
   return (
-    <>
-      <div className="w-screen h-screen bg-[#FAFAFA] flex items-center justify-center py-[50px]">
-        <div className="flex flex-col bg-white h-full w-[700px] p-10 border gap-6">
-          <div className="flex gap-4">
-            <div className="border flex items-center justify-center p-1 rounded-lg shadow-2xs">
-              <ArrowLeft width={20} height={20} />
-            </div>
-            <h3 className="font-bold text-lg">Apply Frontend at Rakamin</h3>
+    <div className="w-screen h-screen bg-[#FAFAFA] flex items-center justify-center py-[50px]">
+      <div className="flex flex-col bg-white h-full w-[700px] py-10 border gap-6">
+        <div className="flex gap-4 px-10">
+          <div className="border flex items-center justify-center p-1 rounded-lg shadow-2xs">
+            <ArrowLeft width={20} height={20} />
           </div>
+          <h3 className="font-bold text-lg">Apply Frontend at Rakamin</h3>
+        </div>
+        <form
+          className="h-fit overflow-auto px-10"
+          id="applyJob"
+          name="applyJob"
+        >
           <div className="flex flex-col px-6 gap-4">
             <p className="text-xs font-bold text-red-500">*Required</p>
             <div className="flex flex-col gap-2">
@@ -386,15 +408,108 @@ const ApplyJob = () => {
                 </DialogContent>
               </Dialog>
             </div>
+            <InputLabel
+              inputId="fullname"
+              inputType="text"
+              label="Full name"
+              placeholder="Enter your full name"
+            />
+            <DatePicker
+              label="Date of birth"
+              placeholder="Select date of birth"
+            />
+            <div className="flex flex-col gap-2">
+              <Label className="text-xs" htmlFor="gender">
+                Pronoun (gender)
+              </Label>
+              <RadioGroup name="gender" className="flex">
+                <div className="flex items-center gap-2 ">
+                  <RadioGroupItem value="female" id="female" />
+                  <Label htmlFor="female">She/her (Female)</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <RadioGroupItem value="male" id="male" />
+                  <Label htmlFor="male">He/him (Male)</Label>
+                </div>
+              </RadioGroup>
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label className="text-xs">Domicile</Label>
+              <Select>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Choose your domicile" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="full-time">Jakarta</SelectItem>
+                    <SelectItem value="contract">Lampung</SelectItem>
+                    <SelectItem value="part-time">Bandung</SelectItem>
+                    <SelectItem value="internship">Yogyakarta</SelectItem>
+                    <SelectItem value="freelance">Jayapura</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-2 w-full">
+              <Label className="text-xs ">Phone number</Label>
+              <InputGroup>
+                <InputGroupInput
+                  type="text"
+                  id="phone"
+                  name="phone"
+                  placeholder="81XXXXXXXX"
+                />
+                <InputGroupAddon>
+                  <div className="flex gap-2">
+                    <Select defaultValue="id">
+                      <SelectTrigger className="w-full border-0 shadow-none rounded-none p-0">
+                        <SelectValue placeholder="Choose your country phone" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="id">ID</SelectItem>
+                          <SelectItem value="usa">USA</SelectItem>
+                          <SelectItem value="uk">UK</SelectItem>
+                          <SelectItem value="uae">UAE</SelectItem>
+                          <SelectItem value="tha">THA</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <span className="border-[0.5px] my-2"></span>
+                  </div>
+                </InputGroupAddon>
+                <InputGroupAddon>
+                  <InputGroupText className="text-gray-700">+62</InputGroupText>
+                </InputGroupAddon>
+              </InputGroup>
+            </div>
+            <InputLabel
+              inputId="email"
+              inputType="text"
+              label="Email"
+              placeholder="Enter your email address"
+            />
+            <InputLabel
+              inputId="linkedin"
+              inputType="text"
+              label="Link linkedin"
+              placeholder="https://linkedin.com/in/username"
+            />
+
+            <canvas
+              ref={canvasPhotoRef}
+              id="canvasElement"
+              className="hidden"
+            />
           </div>
-          <canvas
-            ref={canvasPhotoRef}
-            id="canvasElement"
-            className="hidden"
-          ></canvas>
+        </form>
+        <div className="flex justify-center items-center border-t pt-6 px-10">
+          <Button type="submit" form="applyJob" className="w-full">
+            Submit
+          </Button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

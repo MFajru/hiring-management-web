@@ -5,7 +5,7 @@ import {
   InputGroupText,
 } from "../ui/input-group";
 import { Label } from "../ui/label";
-import { InputHTMLAttributes } from "react";
+import React, { InputHTMLAttributes } from "react";
 
 interface TInputLabel extends InputHTMLAttributes<HTMLInputElement> {
   inputId: string;
@@ -15,6 +15,14 @@ interface TInputLabel extends InputHTMLAttributes<HTMLInputElement> {
   errorMsg?: string;
   prefix?: string;
   noErrorText?: boolean;
+  prefixIcon?: React.ReactNode;
+  prefixIconAlign?:
+    | "inline-start"
+    | "inline-end"
+    | "block-start"
+    | "block-end"
+    | null
+    | undefined;
 }
 
 const InputLabel = ({
@@ -25,6 +33,8 @@ const InputLabel = ({
   errorMsg = "",
   prefix = "",
   noErrorText = false,
+  prefixIcon = null,
+  prefixIconAlign = "inline-start",
   ...props
 }: TInputLabel) => {
   return (
@@ -41,6 +51,11 @@ const InputLabel = ({
           placeholder={placeholder}
           {...props}
         />
+        {prefixIcon !== null && (
+          <InputGroupAddon align={prefixIconAlign} className="pl-0">
+            <InputGroupAddon>{prefixIcon}</InputGroupAddon>
+          </InputGroupAddon>
+        )}
         {prefix !== "" && (
           <InputGroupAddon>
             <InputGroupText className="font-bold text-black">
