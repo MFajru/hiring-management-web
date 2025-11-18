@@ -69,7 +69,7 @@ export const numberTwoGesture = (numberTwoGesture: fp.GestureDescription) => {
 
   for (const finger of [fp.Finger.Thumb, fp.Finger.Ring, fp.Finger.Pinky]) {
     numberTwoGesture.addCurl(finger, fp.FingerCurl.FullCurl, 1.0);
-    numberTwoGesture.addCurl(finger, fp.FingerCurl.HalfCurl, 0.5);
+    numberTwoGesture.addCurl(finger, fp.FingerCurl.HalfCurl, 0.2);
   }
 };
 

@@ -18,11 +18,18 @@ import { useEffect, useRef, useState } from "react";
 import { gestureGenerator } from "../../_lib/gestures";
 import { Coords3D } from "@tensorflow-models/handpose/dist/pipeline";
 
-type gestures = {
+type TGestures = {
   numberOne: boolean;
   numberTwo: boolean;
   numberThree: boolean;
 };
+
+type TPhotoURL = {
+  url: string;
+  isSubmited: boolean;
+};
+
+const PHOTO_TIMER = 3;
 
 const ApplyJob = () => {
   const gestures = gestureGenerator();
@@ -31,17 +38,20 @@ const ApplyJob = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasPhotoRef = useRef<HTMLCanvasElement>(null);
-  const [remainingSec, setRemainingSec] = useState<number>(3);
-  const [photoUrl, setPhotoUrl] = useState<string>("");
+  const [remainingSec, setRemainingSec] = useState<number>(PHOTO_TIMER);
+  const [photoUrl, setPhotoUrl] = useState<TPhotoURL>({
+    url: "",
+    isSubmited: false,
+  });
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [gesturesPerformed, setGesturesPerformed] = useState<gestures>({
+  const [gesturesPerformed, setGesturesPerformed] = useState<TGestures>({
     numberOne: false,
     numberTwo: false,
     numberThree: false,
   });
 
   const countdown = () => {
-    let remainingSec = 3;
+    let remainingSec = PHOTO_TIMER;
 
     const timer = setInterval(() => {
       remainingSec--;
@@ -62,15 +72,16 @@ const ApplyJob = () => {
         ?.drawImage(videoRef.current, 0, 0);
 
       const photoDataUrl = canvasPhotoRef.current.toDataURL("image/jpeg");
-      setPhotoUrl(photoDataUrl);
+      setPhotoUrl({ url: photoDataUrl, isSubmited: false });
       setGesturesPerformed({
         numberOne: false,
         numberTwo: false,
         numberThree: false,
       });
       isPhotoTakenRef.current = false;
-      setRemainingSec(3);
+      stopWebcam();
     }
+    setRemainingSec(PHOTO_TIMER);
   };
 
   const startWebcam = async () => {
@@ -141,7 +152,7 @@ const ApplyJob = () => {
             );
 
             if (
-              !gesturesPerformed[maxConfidenceGesture.name as keyof gestures]
+              !gesturesPerformed[maxConfidenceGesture.name as keyof TGestures]
             ) {
               setGesturesPerformed((prev) => ({
                 ...prev,
@@ -181,9 +192,10 @@ const ApplyJob = () => {
     ) {
       countdown();
       isPhotoTakenRef.current = true;
-      setTimeout(capturePhoto, 3000);
+      setTimeout(capturePhoto, PHOTO_TIMER * 1000);
       console.log("duar", gesturesPerformed);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gesturesPerformed]);
 
   return (
@@ -202,13 +214,19 @@ const ApplyJob = () => {
               <h5 className="font-bold text-xs capitalize">Photo profile</h5>
               <div>
                 <Image
-                  src={photoUrl !== "" ? photoUrl : "/avatarMale.png"}
+                  src={
+                    photoUrl.url !== "" && photoUrl.isSubmited
+                      ? photoUrl.url
+                      : "/avatarMale.png"
+                  }
                   alt="avatar picture"
                   height={128}
                   width={128}
                   loading="eager"
                   className={`rounded-full w-32 h-32 object-cover ${
-                    photoUrl !== "" ? "-scale-x-100" : ""
+                    photoUrl.url !== "" && photoUrl.isSubmited
+                      ? "-scale-x-100"
+                      : ""
                   }`}
                 />
               </div>
@@ -236,22 +254,41 @@ const ApplyJob = () => {
                   </DialogHeader>
                   <div className="flex flex-col justify-center items-center w-full gap-4">
                     <div className="relative">
-                      <video
-                        ref={videoRef}
-                        width={640}
-                        height={480}
-                        className="border -scale-x-100"
-                        id="videoElement"
-                        autoPlay
-                        playsInline
-                        muted
-                      />
-                      <canvas
-                        ref={canvasRef}
-                        width={640}
-                        height={480}
-                        className="w-full h-full absolute top-0 left-0 border rounded-md -scale-x-100"
-                      />
+                      {photoUrl.url !== "" ? (
+                        <Image
+                          src={photoUrl.url}
+                          alt="Photo taken"
+                          width={640}
+                          height={480}
+                          className="-scale-x-100"
+                        />
+                      ) : (
+                        <>
+                          <video
+                            ref={videoRef}
+                            width={640}
+                            height={480}
+                            className="border -scale-x-100"
+                            id="videoElement"
+                            autoPlay
+                            playsInline
+                            muted
+                          />
+                          <canvas
+                            ref={canvasRef}
+                            width={640}
+                            height={480}
+                            className={`${
+                              gesturesPerformed.numberOne &&
+                              gesturesPerformed.numberTwo &&
+                              gesturesPerformed.numberThree
+                                ? "hidden"
+                                : "w-full h-full absolute top-0 left-0 border rounded-md -scale-x-100"
+                            }`}
+                          />
+                        </>
+                      )}
+
                       {isPhotoTakenRef.current && (
                         <>
                           <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30"></div>
@@ -263,40 +300,88 @@ const ApplyJob = () => {
                         </>
                       )}
                     </div>
-
-                    <p className="text-xs text-[#1D1F20]">
-                      To take a picture, follow the hand poses in the order
-                      shown below. The system will automatically capture the
-                      image once the final pose is detected.
-                    </p>
-                    <div className="flex gap-2 w-full justify-center items-center">
-                      <Image
-                        src="/openCamera3.png"
-                        width={57}
-                        height={57}
-                        alt="three hand gesture"
-                      />
-                      <ChevronRight />
-                      <Image
-                        src="/openCamera2.png"
-                        width={57}
-                        height={57}
-                        alt="two hand gesture"
-                      />
-                      <ChevronRight />
-                      <Image
-                        src="/openCamera1.png"
-                        width={57}
-                        height={57}
-                        alt="one hand gesture"
-                      />
-                    </div>
+                    {photoUrl.url === "" && (
+                      <>
+                        <p className="text-xs text-[#1D1F20]">
+                          To take a picture, follow the hand poses in the order
+                          shown below. The system will automatically capture the
+                          image once the final pose is detected.
+                        </p>
+                        <div className="flex gap-2 w-full justify-center items-center">
+                          <Image
+                            src="/openCamera3.png"
+                            width={57}
+                            height={57}
+                            alt="three hand gesture"
+                            className={`border-3 ${
+                              gesturesPerformed.numberThree
+                                ? "border-green-500"
+                                : "border-gray-400"
+                            }`}
+                          />
+                          <ChevronRight />
+                          <Image
+                            src="/openCamera2.png"
+                            width={57}
+                            height={57}
+                            alt="two hand gesture"
+                            className={`${
+                              gesturesPerformed.numberThree ? "border-3" : ""
+                            } ${
+                              gesturesPerformed.numberTwo
+                                ? "border-green-500"
+                                : "border-gray-400"
+                            }`}
+                          />
+                          <ChevronRight />
+                          <Image
+                            src="/openCamera1.png"
+                            width={57}
+                            height={57}
+                            alt="one hand gesture"
+                            className={`${
+                              gesturesPerformed.numberThree &&
+                              gesturesPerformed.numberTwo
+                                ? "border-3"
+                                : ""
+                            } ${
+                              gesturesPerformed.numberOne
+                                ? "border-green-500"
+                                : "border-gray-400"
+                            }`}
+                          />
+                        </div>
+                      </>
+                    )}
                   </div>
 
-                  <DialogFooter>
-                    <div className="w-full flex justify-end mt-2">
-                      <Button type="submit">Publish Job</Button>
-                    </div>
+                  <DialogFooter className="justify-center">
+                    {photoUrl.url !== "" && (
+                      <div className="w-full flex justify-center items-center mt-2 gap-4">
+                        <Button
+                          type="button"
+                          variant={"outline"}
+                          onClick={() => {
+                            setPhotoUrl({ url: "", isSubmited: false });
+                            takeAPhoto();
+                          }}
+                        >
+                          Retake Photo
+                        </Button>
+                        <Button
+                          type="button"
+                          onClick={() => {
+                            setPhotoUrl((prev) => ({
+                              ...prev,
+                              isSubmited: true,
+                            }));
+                            setIsDialogOpen(false);
+                          }}
+                        >
+                          Submit
+                        </Button>
+                      </div>
+                    )}
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
