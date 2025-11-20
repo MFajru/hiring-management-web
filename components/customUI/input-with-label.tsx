@@ -23,6 +23,7 @@ interface TInputLabel extends InputHTMLAttributes<HTMLInputElement> {
     | "block-end"
     | null
     | undefined;
+  isMandatory?: boolean;
 }
 
 const InputLabel = ({
@@ -35,12 +36,14 @@ const InputLabel = ({
   noErrorText = false,
   prefixIcon = null,
   prefixIconAlign = "inline-start",
+  isMandatory = false,
   ...props
 }: TInputLabel) => {
   return (
     <div className="flex flex-col gap-2 w-full">
-      <Label htmlFor={inputId} className="font-normal text-xs">
+      <Label htmlFor={inputId} className="font-normal text-xs gap-0">
         {label}
+        <span className="text-red-500">{isMandatory ? "*" : ""}</span>
       </Label>
 
       <InputGroup className={errorMsg !== "" ? "border border-red-500" : ""}>

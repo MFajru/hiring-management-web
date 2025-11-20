@@ -6,13 +6,14 @@ export interface IBreadcrumb {
 export type TCandidate = {
   id: number;
   fullName: string;
+  photoProfile: string;
   email: string;
   phone: string;
   dob: string;
   domicile: string;
   gender: string;
   linkedin: string;
-  jobId: number;
+  jobId: string;
 };
 
 export type TProfileInfoReq = {
@@ -23,7 +24,7 @@ export type TProfileInfoReq = {
 };
 
 export type TJobList = {
-  id: number;
+  id: string;
   jobName: string;
   jobType: string;
   jobDesc: string;
@@ -33,4 +34,17 @@ export type TJobList = {
   createdDate: string;
   status: string;
   requiredInfo: TProfileInfoReq[];
+};
+
+export type TFormJob = {
+  id: number;
+  jobId: number;
+  photoProfile: string;
+  fullName: string;
+  dob: string;
+  gender: string;
+  domicile: string;
+  phoneNumber: string;
+  email: string;
+  linkedin: string;
 };

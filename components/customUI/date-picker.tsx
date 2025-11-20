@@ -11,13 +11,15 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "../ui/calendar";
+import moment from "moment";
 
 type TDatePicker = {
   label: string;
   placeholder: string;
+  dateSelected?: string;
 };
 
-const DatePicker = ({ label, placeholder }: TDatePicker) => {
+const DatePicker = ({ label, placeholder, dateSelected }: TDatePicker) => {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<Date | undefined>(undefined);
 
@@ -32,10 +34,13 @@ const DatePicker = ({ label, placeholder }: TDatePicker) => {
             variant="outline"
             id="date"
             className="justify-between items-center font-normal w-full"
+            onClick={() => console.log(moment(date).format())}
           >
             <div className="flex gap-2 items-center font-normal w-full text-gray-500">
               <CalendarDays color="#1D1F20" size={14} />
-              {date ? date.toLocaleDateString() : placeholder}
+              <p className={`${date ? "text-black" : ""}`}>
+                {date ? date.toLocaleDateString() : placeholder}
+              </p>
             </div>
 
             <ChevronDownIcon color="#B9B9B9" />

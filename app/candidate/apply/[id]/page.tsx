@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { ArrowLeft, ChevronRight, Upload } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { gestureGenerator } from "../../_lib/gestures";
 import { Coords3D } from "@tensorflow-models/handpose/dist/pipeline";
 import InputLabel from "@/components/customUI/input-with-label";
@@ -35,6 +35,9 @@ import {
   InputGroupInput,
   InputGroupText,
 } from "@/components/ui/input-group";
+import { useFetch } from "@/hooks/useFetch";
+import { TCandidate } from "@/types";
+import Link from "next/link";
 
 type TGestures = {
   numberOne: boolean;
@@ -56,6 +59,7 @@ const ApplyJob = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasPhotoRef = useRef<HTMLCanvasElement>(null);
+
   const [remainingSec, setRemainingSec] = useState<number>(PHOTO_TIMER);
   const [photoUrl, setPhotoUrl] = useState<TPhotoURL>({
     url: "",
@@ -66,6 +70,39 @@ const ApplyJob = () => {
     numberOne: false,
     numberTwo: false,
     numberThree: false,
+  });
+  const { data: postReseponse, fetchData: postData } = useFetch<TCandidate>();
+  const [formData, setFormData] = useState<Partial<TCandidate>>({
+    photoProfile: "",
+    fullName: "",
+    email: "",
+    phone: "",
+    dob: "",
+    domicile: "",
+    gender: "",
+    linkedin: "",
+    jobId: "",
+  });
+
+  const handleSubmitForm = () => {
+    postData("http://localhost:3001/candidates", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+  };
+
+  const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  useEffect(() => {
+    console.log(formData);
   });
 
   const countdown = () => {
@@ -410,9 +447,12 @@ const ApplyJob = () => {
             </div>
             <InputLabel
               inputId="fullname"
+              name="fullName"
               inputType="text"
               label="Full name"
               placeholder="Enter your full name"
+              isMandatory={true}
+              onChange={handleOnChange}
             />
             <DatePicker
               label="Date of birth"
@@ -422,7 +462,11 @@ const ApplyJob = () => {
               <Label className="text-xs" htmlFor="gender">
                 Pronoun (gender)
               </Label>
-              <RadioGroup name="gender" className="flex">
+              <RadioGroup
+                name="gender"
+                className="flex"
+                onChange={handleOnChange}
+              >
                 <div className="flex items-center gap-2 ">
                   <RadioGroupItem value="female" id="female" />
                   <Label htmlFor="female">She/her (Female)</Label>
@@ -458,6 +502,7 @@ const ApplyJob = () => {
                   id="phone"
                   name="phone"
                   placeholder="81XXXXXXXX"
+                  onChange={handleOnChange}
                 />
                 <InputGroupAddon>
                   <div className="flex gap-2">
@@ -485,15 +530,19 @@ const ApplyJob = () => {
             </div>
             <InputLabel
               inputId="email"
+              name="email"
               inputType="text"
               label="Email"
               placeholder="Enter your email address"
+              onChange={handleOnChange}
             />
             <InputLabel
               inputId="linkedin"
+              name="linkedin"
               inputType="text"
               label="Link linkedin"
               placeholder="https://linkedin.com/in/username"
+              onChange={handleOnChange}
             />
 
             <canvas
