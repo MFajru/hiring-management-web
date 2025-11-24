@@ -12,16 +12,24 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "../ui/calendar";
 import moment from "moment";
+import { Dispatch, SetStateAction, useEffect } from "react";
+import { da } from "date-fns/locale";
 
 type TDatePicker = {
   label: string;
   placeholder: string;
-  dateSelected?: string;
+  setSelectedDate: Dispatch<SetStateAction<string>>;
 };
 
-const DatePicker = ({ label, placeholder, dateSelected }: TDatePicker) => {
+const DatePicker = ({ label, placeholder, setSelectedDate }: TDatePicker) => {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<Date | undefined>(undefined);
+
+  useEffect(() => {
+    if (date) {
+      setSelectedDate(moment(date).format().toString());
+    }
+  }, [date]);
 
   return (
     <div className="flex flex-col gap-2 w-full">
@@ -34,7 +42,6 @@ const DatePicker = ({ label, placeholder, dateSelected }: TDatePicker) => {
             variant="outline"
             id="date"
             className="justify-between items-center font-normal w-full"
-            onClick={() => console.log(moment(date).format())}
           >
             <div className="flex gap-2 items-center font-normal w-full text-gray-500">
               <CalendarDays color="#1D1F20" size={14} />

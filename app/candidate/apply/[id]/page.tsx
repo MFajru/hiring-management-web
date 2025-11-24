@@ -37,7 +37,6 @@ import {
 } from "@/components/ui/input-group";
 import { useFetch } from "@/hooks/useFetch";
 import { TCandidate } from "@/types";
-import Link from "next/link";
 
 type TGestures = {
   numberOne: boolean;
@@ -83,6 +82,7 @@ const ApplyJob = () => {
     linkedin: "",
     jobId: "",
   });
+  const [selectedDate, setSelectedDate] = useState<string>("");
 
   const handleSubmitForm = () => {
     postData("http://localhost:3001/candidates", {
@@ -237,6 +237,15 @@ const ApplyJob = () => {
       stopWebcam();
     }
   }, [isDialogOpen]);
+
+  useEffect(() => {
+    if (selectedDate !== "") {
+      setFormData((prev) => ({
+        ...prev,
+        dob: selectedDate,
+      }));
+    }
+  }, [selectedDate]);
 
   useEffect(() => {
     if (
@@ -457,6 +466,7 @@ const ApplyJob = () => {
             <DatePicker
               label="Date of birth"
               placeholder="Select date of birth"
+              setSelectedDate={setSelectedDate}
             />
             <div className="flex flex-col gap-2">
               <Label className="text-xs" htmlFor="gender">
