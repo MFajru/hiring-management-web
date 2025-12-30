@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { ArrowLeft, ChevronRight, Upload } from "lucide-react";
 import Image from "next/image";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { gestureGenerator } from "../../_lib/gestures";
 import { Coords3D } from "@tensorflow-models/handpose/dist/pipeline";
 import InputLabel from "@/components/customUI/input-with-label";
@@ -64,6 +64,7 @@ const ApplyJob = () => {
     url: "",
     isSubmited: false,
   });
+  const [selectedDom, setSelectedDom] = useState<string>("");
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [gesturesPerformed, setGesturesPerformed] = useState<TGestures>({
     numberOne: false,
@@ -84,13 +85,27 @@ const ApplyJob = () => {
   });
   const [selectedDate, setSelectedDate] = useState<string>("");
 
-  const handleSubmitForm = () => {
+  const handleSubmitPhoto = () => {
+    setPhotoUrl((prev) => ({
+      ...prev,
+      isSubmited: true,
+    }));
+    setIsDialogOpen(false);
+    setFormData((prev) => ({
+      ...prev,
+      photoProfile: photoUrl.url,
+    }));
+  };
+
+  const handleSubmitForm = (e: FormEvent) => {
+    e.preventDefault();
+
     postData("http://localhost:3001/candidates", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify({ ...formData, domicile: selectedDom }),
     });
   };
 
@@ -275,6 +290,7 @@ const ApplyJob = () => {
           className="h-fit overflow-auto px-10"
           id="applyJob"
           name="applyJob"
+          onSubmit={handleSubmitForm}
         >
           <div className="flex flex-col px-6 gap-4">
             <p className="text-xs font-bold text-red-500">*Required</p>
@@ -436,16 +452,7 @@ const ApplyJob = () => {
                         >
                           Retake Photo
                         </Button>
-                        <Button
-                          type="button"
-                          onClick={() => {
-                            setPhotoUrl((prev) => ({
-                              ...prev,
-                              isSubmited: true,
-                            }));
-                            setIsDialogOpen(false);
-                          }}
-                        >
+                        <Button type="button" onClick={handleSubmitPhoto}>
                           Submit
                         </Button>
                       </div>
@@ -489,17 +496,17 @@ const ApplyJob = () => {
             </div>
             <div className="flex flex-col gap-2">
               <Label className="text-xs">Domicile</Label>
-              <Select>
+              <Select value={selectedDom} onValueChange={setSelectedDom}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Choose your domicile" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="full-time">Jakarta</SelectItem>
-                    <SelectItem value="contract">Lampung</SelectItem>
-                    <SelectItem value="part-time">Bandung</SelectItem>
-                    <SelectItem value="internship">Yogyakarta</SelectItem>
-                    <SelectItem value="freelance">Jayapura</SelectItem>
+                    <SelectItem value="jakarta">Jakarta</SelectItem>
+                    <SelectItem value="lampung">Lampung</SelectItem>
+                    <SelectItem value="bandung">Bandung</SelectItem>
+                    <SelectItem value="yogyakarta">Yogyakarta</SelectItem>
+                    <SelectItem value="jayapura">Jayapura</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
