@@ -37,6 +37,17 @@ import {
 } from "@/components/ui/input-group";
 import { useFetch } from "@/hooks/useFetch";
 import { TCandidate } from "@/types";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 type TGestures = {
   numberOne: boolean;
@@ -570,9 +581,30 @@ const ApplyJob = () => {
           </div>
         </form>
         <div className="flex justify-center items-center border-t pt-6 px-10">
-          <Button type="submit" form="applyJob" className="w-full">
-            Submit
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger className="w-full">
+              <Button type="button" className="w-full">
+                Submit
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Apply Job?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  The data will be sent to the company, make sure all of the
+                  submitted data is correct.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction>
+                  <Button type="submit" form="applyJob" className="w-full">
+                    Submit
+                  </Button>
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
     </div>
