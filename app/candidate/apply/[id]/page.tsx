@@ -48,6 +48,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Spinner } from "@/components/ui/spinner";
 
 type TGestures = {
   numberOne: boolean;
@@ -82,7 +83,11 @@ const ApplyJob = () => {
     numberTwo: false,
     numberThree: false,
   });
-  const { data: postReseponse, fetchData: postData } = useFetch<TCandidate>();
+  const {
+    data: postReseponse,
+    fetchData: postData,
+    isLoading,
+  } = useFetch<TCandidate>();
   const [formData, setFormData] = useState<Partial<TCandidate>>({
     photoProfile: "",
     fullName: "",
@@ -588,21 +593,27 @@ const ApplyJob = () => {
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Apply Job?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  The data will be sent to the company, make sure all of the
-                  submitted data is correct.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction>
-                  <Button type="submit" form="applyJob" className="w-full">
-                    Submit
-                  </Button>
-                </AlertDialogAction>
-              </AlertDialogFooter>
+              {!isLoading ? (
+                <Spinner className="w-full" />
+              ) : (
+                <>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Apply Job?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      The data will be sent to the company, make sure all of the
+                      submitted data is correct.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction>
+                      <Button type="submit" form="applyJob" className="w-full">
+                        Submit
+                      </Button>
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </>
+              )}
             </AlertDialogContent>
           </AlertDialog>
         </div>
