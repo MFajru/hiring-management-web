@@ -49,6 +49,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Spinner } from "@/components/ui/spinner";
+import { useParams } from "next/navigation";
 
 type TGestures = {
   numberOne: boolean;
@@ -65,6 +66,8 @@ const PHOTO_TIMER = 3;
 
 const ApplyJob = () => {
   const gestures = gestureGenerator();
+
+  const params = useParams<{ id: string }>();
 
   const isPhotoTakenRef = useRef<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -121,7 +124,11 @@ const ApplyJob = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ ...formData, domicile: selectedDom }),
+      body: JSON.stringify({
+        ...formData,
+        domicile: selectedDom,
+        jobId: params.id,
+      }),
     });
   };
 
@@ -587,33 +594,42 @@ const ApplyJob = () => {
         </form>
         <div className="flex justify-center items-center border-t pt-6 px-10">
           <AlertDialog>
-            <AlertDialogTrigger className="w-full">
-              <Button type="button" className="w-full">
+            <AlertDialogTrigger className="w-full" type="button">
+              <p className="w-full bg-[#01959F] text-primary-foreground hover:bg-[#018c96] font-bold hover:cursor-pointer py-2 rounded-md">
                 Submit
-              </Button>
+              </p>
             </AlertDialogTrigger>
             <AlertDialogContent>
-              {!isLoading ? (
-                <Spinner className="w-full" />
-              ) : (
-                <>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Apply Job?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      The data will be sent to the company, make sure all of the
-                      submitted data is correct.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
+              {/* {!isLoading && (
+                <div className="absolute w-full h-full bg-black/20 z-10 flex items-center justify-center rounded-md">
+                  <Spinner className="w-full size-8" />
+                </div>
+              )} */}
+              <AlertDialogHeader>
+                <AlertDialogTitle>Apply Job?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  The data will be sent to the company, make sure all of the
+                  submitted data is correct.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                {isLoading ? (
+                  <Button variant={"outline"} className="w-24">
+                    <Spinner className="size-5" />
+                  </Button>
+                ) : (
+                  <>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction>
-                      <Button type="submit" form="applyJob" className="w-full">
-                        Submit
-                      </Button>
+                    <AlertDialogAction
+                      type="submit"
+                      form="applyJob"
+                      className=" bg-[#01959F] text-primary-foreground hover:bg-[#018c96] font-bold hover:cursor-pointer py-2 rounded-md"
+                    >
+                      Submit
                     </AlertDialogAction>
-                  </AlertDialogFooter>
-                </>
-              )}
+                  </>
+                )}
+              </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
         </div>
