@@ -9,11 +9,18 @@ import formatToIdr from "@/lib/formatToIdr";
 import { TJobList } from "@/types";
 import { Banknote, MapPin } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const CandidateJoblist = () => {
   const { data: jobList, fetchData: getJobList } = useFetch<TJobList[]>();
   const [clickedJobIdx, setClickedJobIdx] = useState<number | null>(null);
+
+  const router = useRouter();
+
+  const handleApply = (jobId: string) => {
+    router.push(`/candidate/apply/${jobId}`);
+  };
 
   useEffect(() => {
     getJobList("http://localhost:3001/jobPosting", {
@@ -105,7 +112,14 @@ const CandidateJoblist = () => {
                           </div>
                         </div>
                         <div>
-                          <Button className="bg-[#FBC037] px-4 py-1 text-black hover:bg-[#fdb100]">
+                          <Button
+                            className="bg-[#FBC037] px-4 py-1 text-black hover:bg-[#fdb100]"
+                            onClick={() =>
+                              handleApply(
+                                (jobList[clickedJobIdx] as TJobList).id
+                              )
+                            }
+                          >
                             Apply
                           </Button>
                         </div>

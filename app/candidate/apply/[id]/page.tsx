@@ -86,11 +86,7 @@ const ApplyJob = () => {
     numberTwo: false,
     numberThree: false,
   });
-  const {
-    data: postReseponse,
-    fetchData: postData,
-    isLoading,
-  } = useFetch<TCandidate>();
+  const { fetchData: postData, isLoading } = useFetch<TCandidate>();
   const [formData, setFormData] = useState<Partial<TCandidate>>({
     photoProfile: "",
     fullName: "",
@@ -138,10 +134,6 @@ const ApplyJob = () => {
       [e.target.name]: e.target.value,
     }));
   };
-
-  useEffect(() => {
-    console.log(formData);
-  });
 
   const countdown = () => {
     let remainingSec = PHOTO_TIMER;
