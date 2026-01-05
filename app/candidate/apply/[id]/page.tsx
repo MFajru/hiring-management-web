@@ -49,7 +49,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Spinner } from "@/components/ui/spinner";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 type TGestures = {
   numberOne: boolean;
@@ -68,6 +68,8 @@ const ApplyJob = () => {
   const gestures = gestureGenerator();
 
   const params = useParams<{ id: string }>();
+
+  const router = useRouter();
 
   const isPhotoTakenRef = useRef<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -296,9 +298,12 @@ const ApplyJob = () => {
     <div className="w-screen h-screen bg-[#FAFAFA] flex items-center justify-center py-[50px]">
       <div className="flex flex-col bg-white h-full w-[700px] py-10 border gap-6">
         <div className="flex gap-4 px-10">
-          <div className="border flex items-center justify-center p-1 rounded-lg shadow-2xs">
+          <button
+            className="hover:cursor-pointer hover:bg-accent border flex items-center justify-center p-1 rounded-lg shadow-2xs"
+            onClick={() => router.back()}
+          >
             <ArrowLeft width={20} height={20} />
-          </div>
+          </button>
           <h3 className="font-bold text-lg">Apply Frontend at Rakamin</h3>
         </div>
         <form
@@ -592,11 +597,6 @@ const ApplyJob = () => {
               </p>
             </AlertDialogTrigger>
             <AlertDialogContent>
-              {/* {!isLoading && (
-                <div className="absolute w-full h-full bg-black/20 z-10 flex items-center justify-center rounded-md">
-                  <Spinner className="w-full size-8" />
-                </div>
-              )} */}
               <AlertDialogHeader>
                 <AlertDialogTitle>Apply Job?</AlertDialogTitle>
                 <AlertDialogDescription>
