@@ -199,6 +199,8 @@ const ApplyJob = () => {
     setFormData(FORMDATA_INIT);
     setPhotoUrl(PHOTOURL_INIT);
     setIsSuccess(false);
+    setSelectedDate("");
+    setSelectedDom("");
   };
 
   const capturePhoto = () => {
@@ -560,6 +562,7 @@ const ApplyJob = () => {
               <RadioGroup
                 name="gender"
                 className="flex"
+                value={formData.gender}
                 onChange={handleOnChange}
               >
                 <div className="flex items-center gap-2 ">
@@ -594,6 +597,7 @@ const ApplyJob = () => {
               <InputGroup>
                 <InputGroupInput
                   type="text"
+                  value={formData.phone}
                   id="phone"
                   name="phone"
                   placeholder="81XXXXXXXX"
@@ -625,6 +629,7 @@ const ApplyJob = () => {
             </div>
             <InputLabel
               inputId="email"
+              value={formData.email}
               name="email"
               inputType="text"
               label="Email"
@@ -633,6 +638,7 @@ const ApplyJob = () => {
             />
             <InputLabel
               inputId="linkedin"
+              value={formData.linkedin}
               name="linkedin"
               inputType="text"
               label="Link linkedin"
