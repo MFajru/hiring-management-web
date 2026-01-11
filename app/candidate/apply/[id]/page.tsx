@@ -50,6 +50,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Spinner } from "@/components/ui/spinner";
 import { useParams, useRouter } from "next/navigation";
+import {
+  apiUrl,
+  cloudinaryCloudName,
+  cloudinaryPreset,
+} from "@/lib/environment";
+import { CldUploadButton } from "next-cloudinary";
 
 type TGestures = {
   numberOne: boolean;
@@ -114,10 +120,35 @@ const ApplyJob = () => {
     }));
   };
 
-  const handleSubmitForm = (e: FormEvent) => {
+  const cloudinaryUploadImage = async () => {
+    const formData = new FormData();
+    formData.append("file", photoUrl.url);
+    formData.append("upload_preset", cloudinaryPreset as string);
+    try {
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudinaryCloudName}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      if (!res.ok) {
+        throw new Error("Error when posting image");
+      }
+      const response = res.json();
+      console.log(response);
+      return response;
+    } catch (e) {
+      throw new Error("Something happen when fetching", { cause: e });
+    }
+  };
+
+  const handleSubmitForm = async (e: FormEvent) => {
     e.preventDefault();
 
-    postData("http://localhost:3001/candidates", {
+    const postImage = await cloudinaryUploadImage();
+
+    postData(`${apiUrl}/candidates`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -125,6 +156,7 @@ const ApplyJob = () => {
       body: JSON.stringify({
         ...formData,
         domicile: selectedDom,
+        photoProfile: postImage.secure_url,
         jobId: params.id,
       }),
     });
@@ -159,6 +191,7 @@ const ApplyJob = () => {
         ?.drawImage(videoRef.current, 0, 0);
 
       const photoDataUrl = canvasPhotoRef.current.toDataURL("image/jpeg");
+
       setPhotoUrl({ url: photoDataUrl, isSubmited: false });
       setGesturesPerformed({
         numberOne: false,
@@ -317,6 +350,11 @@ const ApplyJob = () => {
             <div className="flex flex-col gap-2">
               <h5 className="font-bold text-xs capitalize">Photo profile</h5>
               <div>
+                {/* <CldUploadButton
+                  signatureEndpoint={"/api/sign-cloudinary-params"}
+                  uploadPreset={cloudinaryPreset}
+                  className="bg-blue-500 w-24"
+                /> */}
                 <Image
                   src={
                     photoUrl.url !== "" && photoUrl.isSubmited

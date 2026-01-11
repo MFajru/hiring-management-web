@@ -5,6 +5,7 @@ import Topbar from "@/components/customUI/topbar";
 import { Button } from "@/components/ui/button";
 import { TopbarProvider } from "@/context/topbarContext";
 import { useFetch } from "@/hooks/useFetch";
+import { apiUrl } from "@/lib/environment";
 import formatToIdr from "@/lib/formatToIdr";
 import { TJobList } from "@/types";
 import { Banknote, MapPin } from "lucide-react";
@@ -23,7 +24,7 @@ const CandidateJoblist = () => {
   };
 
   useEffect(() => {
-    getJobList("http://localhost:3001/jobPosting", {
+    getJobList(`${apiUrl}/jobPosting`, {
       method: "GET",
       headers: {
         "content-type": "application/json",

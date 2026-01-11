@@ -284,6 +284,18 @@
       "gender": "female",
       "linkedin": "",
       "jobId": ""
+    },
+    {
+      "id": "83d0",
+      "photoProfile": "https://res.cloudinary.com/dgvshxgo4/image/upload/v1768122038/avatar-rakamin/fxyiqgia1tp1bw8hefcq.jpg",
+      "fullName": "contoh cloudinary",
+      "email": "",
+      "phone": "",
+      "dob": "",
+      "domicile": "",
+      "gender": "",
+      "linkedin": "",
+      "jobId": "1"
     }
   ]
 }

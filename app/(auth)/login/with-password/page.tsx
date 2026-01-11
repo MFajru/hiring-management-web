@@ -20,6 +20,7 @@ import { ChangeEvent, useState } from "react";
 import { useFetch } from "@/hooks/useFetch";
 import { redirect } from "next/navigation";
 import InputLabel from "@/components/customUI/input-with-label";
+import { apiUrl } from "@/lib/environment";
 
 interface ICredentials {
   email: string;
@@ -49,7 +50,7 @@ const LoginPassword = () => {
   };
 
   const handleLogin = () => {
-    getData("http://localhost:3001/auth/1", {
+    getData(`${apiUrl}/auth/1`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });

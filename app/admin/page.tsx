@@ -28,6 +28,7 @@ import { regexDecimalOnly } from "@/lib/regex";
 import { titleCase } from "@/lib/titleCase";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { TJobList } from "@/types";
+import { apiUrl } from "@/lib/environment";
 
 export type TErrorMsg = {
   jobName: string;
@@ -133,7 +134,7 @@ const AdminHome = () => {
   };
 
   const getJobList = () => {
-    getJobs("http://localhost:3001/jobPosting", {
+    getJobs(`${apiUrl}/jobPosting`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
@@ -144,7 +145,7 @@ const AdminHome = () => {
 
     const isError = isErrorInput();
     if (!isError) {
-      postJobs("http://localhost:3001/jobPosting", {
+      postJobs(`${apiUrl}/jobPosting`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -30,6 +30,7 @@ import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { useFetch } from "@/hooks/useFetch";
 import NoCandidate from "./_components/no-candidate";
+import { apiUrl } from "@/lib/environment";
 
 export const columns: ColumnDef<TCandidate>[] = [
   {
@@ -128,7 +129,7 @@ const ManageJob = () => {
   });
 
   useEffect(() => {
-    fetchData(`http://localhost:3001/candidates?jobId=${urlParams.id}`, {
+    fetchData(`${apiUrl}/candidates?jobId=${urlParams.id}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });

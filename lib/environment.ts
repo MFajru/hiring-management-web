@@ -1,5 +1,7 @@
-const cloudinaryCloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
-
-// NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME = dgvshxgo4
-// CLOUDINARY_API_SECRET = 455331396718233
-// NEXT_PUBLIC_CLOUDINARY_API_KEY = 6WnOlIDY_V0A9y003inngCp84jk
+export const cloudinaryCloudName =
+  process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+export const cloudinaryApiSecret = process.env.CLOUDINARY_API_SECRET;
+export const cloudinariPublicApiKey =
+  process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
+export const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+export const cloudinaryPreset = process.env.NEXT_PUBLIC_CLOUDINARY_PRESET;
