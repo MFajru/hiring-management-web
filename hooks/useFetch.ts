@@ -3,6 +3,7 @@ import { useState } from "react";
 interface UseFetchResponse<T> {
   data: T | string | null;
   isLoading: boolean;
+  isSuccess: boolean;
   error: string | unknown;
   fetchData: (url: string, options: RequestInit | undefined) => Promise<void>;
   setData: React.Dispatch<React.SetStateAction<T | string | null>>;
@@ -16,6 +17,7 @@ interface UseFetchResponse<T> {
 export const useFetch = <T>(): UseFetchResponse<T> => {
   const [data, setData] = useState<T | string | null>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
   const [errorMsg, setErrorMsg] = useState<string[] | string>();
 
@@ -33,21 +35,25 @@ export const useFetch = <T>(): UseFetchResponse<T> => {
       }
       setError("no error" as unknown as Error);
       setData(data);
+      setIsSuccess(true);
     } catch (error) {
+      setIsSuccess(false);
       if (error instanceof SyntaxError) {
         setError(new Error("There is SyntaxError"));
       } else {
         setError(error as Error);
       }
-      console.log(error);
+      throw new Error("Something went wrong", { cause: error });
     } finally {
       setIsLoading(false);
+      console.log("use", isLoading);
     }
   };
 
   return {
     data,
     isLoading,
+    isSuccess,
     error,
     errorMsg,
     fetchData,

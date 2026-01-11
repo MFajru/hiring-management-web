@@ -94,7 +94,7 @@ const ApplyJob = () => {
     numberTwo: false,
     numberThree: false,
   });
-  const { fetchData: postData, isLoading } = useFetch<TCandidate>();
+  const { fetchData: postData, isLoading, isSuccess } = useFetch<TCandidate>();
   const [formData, setFormData] = useState<Partial<TCandidate>>({
     photoProfile: "",
     fullName: "",
@@ -638,25 +638,26 @@ const ApplyJob = () => {
               <AlertDialogHeader>
                 <AlertDialogTitle>Apply Job?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  The data will be sent to the company, make sure all of the
-                  submitted data is correct.
+                  {isSuccess
+                    ? "Data submitted successfully."
+                    : "The data will be sent to the company, make sure all of the submitted data is correct."}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 {isLoading ? (
-                  <Button variant={"outline"} className="w-24">
+                  <Button variant={"outline"} className="w-24" disabled>
                     <Spinner className="size-5" />
                   </Button>
+                ) : isSuccess ? (
+                  <AlertDialogAction asChild>
+                    <Button>OK</Button>
+                  </AlertDialogAction>
                 ) : (
                   <>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      type="submit"
-                      form="applyJob"
-                      className=" bg-[#01959F] text-primary-foreground hover:bg-[#018c96] font-bold hover:cursor-pointer py-2 rounded-md"
-                    >
+                    <Button type="submit" form="applyJob">
                       Submit
-                    </AlertDialogAction>
+                    </Button>
                   </>
                 )}
               </AlertDialogFooter>
