@@ -70,6 +70,23 @@ type TPhotoURL = {
 
 const PHOTO_TIMER = 3;
 
+const FORMDATA_INIT = {
+  photoProfile: "",
+  fullName: "",
+  email: "",
+  phone: "",
+  dob: "",
+  domicile: "",
+  gender: "",
+  linkedin: "",
+  jobId: "",
+};
+
+const PHOTOURL_INIT = {
+  url: "",
+  isSubmited: false,
+};
+
 const ApplyJob = () => {
   const gestures = gestureGenerator();
 
@@ -83,10 +100,7 @@ const ApplyJob = () => {
   const canvasPhotoRef = useRef<HTMLCanvasElement>(null);
 
   const [remainingSec, setRemainingSec] = useState<number>(PHOTO_TIMER);
-  const [photoUrl, setPhotoUrl] = useState<TPhotoURL>({
-    url: "",
-    isSubmited: false,
-  });
+  const [photoUrl, setPhotoUrl] = useState<TPhotoURL>(PHOTOURL_INIT);
   const [selectedDom, setSelectedDom] = useState<string>("");
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [gesturesPerformed, setGesturesPerformed] = useState<TGestures>({
@@ -94,19 +108,16 @@ const ApplyJob = () => {
     numberTwo: false,
     numberThree: false,
   });
-  const { fetchData: postData, isLoading, isSuccess } = useFetch<TCandidate>();
-  const [formData, setFormData] = useState<Partial<TCandidate>>({
-    photoProfile: "",
-    fullName: "",
-    email: "",
-    phone: "",
-    dob: "",
-    domicile: "",
-    gender: "",
-    linkedin: "",
-    jobId: "",
-  });
   const [selectedDate, setSelectedDate] = useState<string>("");
+  const [clIsLoading, setClIsLoading] = useState<boolean>(false);
+
+  const {
+    fetchData: postData,
+    isLoading,
+    isSuccess,
+    setIsSuccess,
+  } = useFetch<TCandidate>();
+  const [formData, setFormData] = useState<Partial<TCandidate>>(FORMDATA_INIT);
 
   const handleSubmitPhoto = () => {
     setPhotoUrl((prev) => ({
@@ -121,25 +132,27 @@ const ApplyJob = () => {
   };
 
   const cloudinaryUploadImage = async () => {
-    const formData = new FormData();
-    formData.append("file", photoUrl.url);
-    formData.append("upload_preset", cloudinaryPreset as string);
+    const clFormData = new FormData();
+    clFormData.append("file", photoUrl.url);
+    clFormData.append("upload_preset", cloudinaryPreset as string);
     try {
+      setClIsLoading(true);
       const res = await fetch(
         `https://api.cloudinary.com/v1_1/${cloudinaryCloudName}/image/upload`,
         {
           method: "POST",
-          body: formData,
+          body: clFormData,
         }
       );
       if (!res.ok) {
         throw new Error("Error when posting image");
       }
-      const response = res.json();
-      console.log(response);
+      const response = await res.json();
       return response;
     } catch (e) {
       throw new Error("Something happen when fetching", { cause: e });
+    } finally {
+      setClIsLoading(false);
     }
   };
 
@@ -179,6 +192,13 @@ const ApplyJob = () => {
         clearInterval(timer);
       }
     }, 1000);
+  };
+
+  const handleOkSubmitted = () => {
+    setClIsLoading(false);
+    setFormData(FORMDATA_INIT);
+    setPhotoUrl(PHOTOURL_INIT);
+    setIsSuccess(false);
   };
 
   const capturePhoto = () => {
@@ -322,7 +342,6 @@ const ApplyJob = () => {
       countdown();
       isPhotoTakenRef.current = true;
       setTimeout(capturePhoto, PHOTO_TIMER * 1000);
-      console.log("duar", gesturesPerformed);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gesturesPerformed]);
@@ -521,6 +540,7 @@ const ApplyJob = () => {
             </div>
             <InputLabel
               inputId="fullname"
+              value={formData.fullName}
               name="fullName"
               inputType="text"
               label="Full name"
@@ -636,7 +656,9 @@ const ApplyJob = () => {
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Apply Job?</AlertDialogTitle>
+                <AlertDialogTitle>
+                  {isSuccess ? "Data Submitted" : "Apply Job?"}
+                </AlertDialogTitle>
                 <AlertDialogDescription>
                   {isSuccess
                     ? "Data submitted successfully."
@@ -644,13 +666,13 @@ const ApplyJob = () => {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                {isLoading ? (
+                {isLoading || clIsLoading ? (
                   <Button variant={"outline"} className="w-24" disabled>
                     <Spinner className="size-5" />
                   </Button>
                 ) : isSuccess ? (
                   <AlertDialogAction asChild>
-                    <Button>OK</Button>
+                    <Button onClick={handleOkSubmitted}>OK</Button>
                   </AlertDialogAction>
                 ) : (
                   <>

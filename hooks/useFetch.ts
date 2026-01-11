@@ -11,6 +11,7 @@ interface UseFetchResponse<T> {
   setErrorMsg: React.Dispatch<
     React.SetStateAction<string | string[] | undefined>
   >;
+  setIsSuccess: React.Dispatch<React.SetStateAction<boolean>>;
   errorMsg: string[] | string | undefined;
 }
 
@@ -46,7 +47,6 @@ export const useFetch = <T>(): UseFetchResponse<T> => {
       throw new Error("Something went wrong", { cause: error });
     } finally {
       setIsLoading(false);
-      console.log("use", isLoading);
     }
   };
 
@@ -60,5 +60,6 @@ export const useFetch = <T>(): UseFetchResponse<T> => {
     setData,
     setErrorMsg,
     setError,
+    setIsSuccess,
   };
 };
