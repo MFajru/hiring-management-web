@@ -68,6 +68,11 @@ type TPhotoURL = {
   isSubmited: boolean;
 };
 
+type TPhoneCountryCodes = {
+  name: string;
+  code: string;
+};
+
 const PHOTO_TIMER = 3;
 
 const FORMDATA_INIT = {
@@ -86,6 +91,29 @@ const PHOTOURL_INIT = {
   url: "",
   isSubmited: false,
 };
+
+const phoneCountryCodes: TPhoneCountryCodes[] = [
+  {
+    name: "ID",
+    code: "62",
+  },
+  {
+    name: "US",
+    code: "1",
+  },
+  {
+    name: "UK",
+    code: "44",
+  },
+  {
+    name: "MY",
+    code: "60",
+  },
+  {
+    name: "SAU",
+    code: "966",
+  },
+];
 
 const ApplyJob = () => {
   const gestures = gestureGenerator();
@@ -109,7 +137,11 @@ const ApplyJob = () => {
     numberThree: false,
   });
   const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedPhoneCountry, setSelectedPhoneCountry] = useState<string>(
+    phoneCountryCodes[0].code
+  );
   const [clIsLoading, setClIsLoading] = useState<boolean>(false);
+  const [formData, setFormData] = useState<Partial<TCandidate>>(FORMDATA_INIT);
 
   const {
     fetchData: postData,
@@ -117,7 +149,6 @@ const ApplyJob = () => {
     isSuccess,
     setIsSuccess,
   } = useFetch<TCandidate>();
-  const [formData, setFormData] = useState<Partial<TCandidate>>(FORMDATA_INIT);
 
   const handleSubmitPhoto = () => {
     setPhotoUrl((prev) => ({
@@ -171,6 +202,7 @@ const ApplyJob = () => {
         domicile: selectedDom,
         photoProfile: postImage.secure_url,
         jobId: params.id,
+        phone: selectedPhoneCountry + formData.phone,
       }),
     });
   };
@@ -201,6 +233,7 @@ const ApplyJob = () => {
     setIsSuccess(false);
     setSelectedDate("");
     setSelectedDom("");
+    setSelectedPhoneCountry(phoneCountryCodes[0].code);
   };
 
   const capturePhoto = () => {
@@ -605,17 +638,20 @@ const ApplyJob = () => {
                 />
                 <InputGroupAddon>
                   <div className="flex gap-2">
-                    <Select defaultValue="id">
+                    <Select
+                      value={selectedPhoneCountry}
+                      onValueChange={setSelectedPhoneCountry}
+                    >
                       <SelectTrigger className="w-full border-0 shadow-none rounded-none p-0">
                         <SelectValue placeholder="Choose your country phone" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value="id">ID</SelectItem>
-                          <SelectItem value="usa">USA</SelectItem>
-                          <SelectItem value="uk">UK</SelectItem>
-                          <SelectItem value="uae">UAE</SelectItem>
-                          <SelectItem value="tha">THA</SelectItem>
+                          {phoneCountryCodes.map((item) => (
+                            <SelectItem key={item.name} value={item.code}>
+                              {item.name}
+                            </SelectItem>
+                          ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -623,7 +659,9 @@ const ApplyJob = () => {
                   </div>
                 </InputGroupAddon>
                 <InputGroupAddon>
-                  <InputGroupText className="text-gray-700">+62</InputGroupText>
+                  <InputGroupText className="text-gray-700">
+                    +{selectedPhoneCountry}
+                  </InputGroupText>
                 </InputGroupAddon>
               </InputGroup>
             </div>
