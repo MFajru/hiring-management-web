@@ -57,13 +57,13 @@ import {
 } from "@/lib/environment";
 import { CldUploadButton } from "next-cloudinary";
 
-type TGestures = {
+export type TGestures = {
   numberOne: boolean;
   numberTwo: boolean;
   numberThree: boolean;
 };
 
-type TPhotoURL = {
+export type TPhotoURL = {
   url: string;
   isSubmited: boolean;
 };

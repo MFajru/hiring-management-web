@@ -1,3 +1,5 @@
+// "use client";
+
 // import { Button } from "@/components/ui/button";
 // import {
 //   Dialog,
@@ -9,17 +11,30 @@
 //   DialogTrigger,
 // } from "@/components/ui/dialog";
 // import { ChevronRight, Upload } from "lucide-react";
-// import { Dispatch, SetStateAction } from "react";
+// import { Dispatch, SetStateAction, useRef, useState } from "react";
+// import { TPhotoURL } from "../page";
 
 // type TTakePictureDialog = {
 //   isDialogOpen: boolean;
 //   setIsDialogOpen: Dispatch<SetStateAction<boolean>>;
+//   setPhotoUrl: Dispatch<SetStateAction<TPhotoURL>>;
+//   setGesturesPerformed: Dispatch<SetStateAction<TPhotoURL>>;
 // };
+
+// const PHOTO_TIMER = 3;
 
 // const TakePictureDialog = ({
 //   isDialogOpen,
 //   setIsDialogOpen,
+//   setPhotoUrl,
 // }: TTakePictureDialog) => {
+//   const isPhotoTakenRef = useRef<boolean>(false);
+//   const videoRef = useRef<HTMLVideoElement>(null);
+//   const canvasRef = useRef<HTMLCanvasElement>(null);
+//   const canvasPhotoRef = useRef<HTMLCanvasElement>(null);
+
+//   const [remainingSec, setRemainingSec] = useState<number>(PHOTO_TIMER);
+
 //   const capturePhoto = () => {
 //     if (canvasPhotoRef.current && videoRef.current) {
 //       canvasPhotoRef.current.width = videoRef.current.videoWidth;
@@ -136,6 +151,7 @@
 //   };
 //   return (
 //     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+//       <canvas ref={canvasPhotoRef} id="canvasElement" className="hidden" />
 //       <DialogTrigger asChild>
 //         <Button
 //           id="takePicture"
