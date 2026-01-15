@@ -22,7 +22,7 @@ import {
   InputGroupText,
 } from "@/components/ui/input-group";
 import { useFetch } from "@/hooks/useFetch";
-import { TCandidate } from "@/types";
+import { TCandidate, TJobList } from "@/types";
 
 import { useParams, useRouter } from "next/navigation";
 import {
@@ -63,6 +63,11 @@ const ApplyJob = () => {
     isSuccess,
     setIsSuccess,
   } = useFetch<TCandidate>();
+  const {
+    fetchData: getJobPosting,
+    isLoading: isLoadingJob,
+    isSuccess: isSuccessJob,
+  } = useFetch<TJobList[]>();
 
   const handleSubmitPhoto = () => {
     setPhotoUrl((prev) => ({
