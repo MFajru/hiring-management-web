@@ -15,10 +15,10 @@ import {
 } from "@/components/ui/dialog";
 import { ChevronRight, Upload } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { TPhotoURL } from "../page";
 import { Coords3D } from "@tensorflow-models/handpose/dist/pipeline";
 import { gestureGenerator } from "@/app/candidate/_lib/gestures";
 import Image from "next/image";
+import { TPhotoURL } from "../_lib/type";
 
 type TGestures = {
   numberOne: boolean;

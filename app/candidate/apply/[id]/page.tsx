@@ -1,7 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
@@ -25,18 +23,7 @@ import {
 } from "@/components/ui/input-group";
 import { useFetch } from "@/hooks/useFetch";
 import { TCandidate } from "@/types";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Spinner } from "@/components/ui/spinner";
+
 import { useParams, useRouter } from "next/navigation";
 import {
   apiUrl,
@@ -44,56 +31,13 @@ import {
   cloudinaryPreset,
 } from "@/lib/environment";
 import TakePictureDialog from "./_components/take-picture-dialog";
-
-export type TPhotoURL = {
-  url: string;
-  isSubmited: boolean;
-};
-
-type TPhoneCountryCodes = {
-  name: string;
-  code: string;
-};
-
-const FORMDATA_INIT = {
-  photoProfile: "",
-  fullName: "",
-  email: "",
-  phone: "",
-  dob: "",
-  domicile: "",
-  gender: "",
-  linkedin: "",
-  jobId: "",
-};
-
-const PHOTOURL_INIT = {
-  url: "",
-  isSubmited: false,
-};
-
-const phoneCountryCodes: TPhoneCountryCodes[] = [
-  {
-    name: "ID",
-    code: "62",
-  },
-  {
-    name: "US",
-    code: "1",
-  },
-  {
-    name: "UK",
-    code: "44",
-  },
-  {
-    name: "MY",
-    code: "60",
-  },
-  {
-    name: "SAU",
-    code: "966",
-  },
-];
+import { TPhotoURL } from "./_lib/type";
+import {
+  FORMDATA_INIT,
+  phoneCountryCodes,
+  PHOTOURL_INIT,
+} from "./_lib/initVal";
+import SubmitDataDialog from "./_components/submit-data-dialog";
 
 const ApplyJob = () => {
   const params = useParams<{ id: string }>();
@@ -370,43 +314,12 @@ const ApplyJob = () => {
           </div>
         </form>
         <div className="flex justify-center items-center border-t pt-6 px-10">
-          <AlertDialog>
-            <AlertDialogTrigger className="w-full" type="button">
-              <p className="w-full bg-[#01959F] text-primary-foreground hover:bg-[#018c96] font-bold hover:cursor-pointer py-2 rounded-md">
-                Submit
-              </p>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>
-                  {isSuccess ? "Data Submitted" : "Apply Job?"}
-                </AlertDialogTitle>
-                <AlertDialogDescription>
-                  {isSuccess
-                    ? "Data submitted successfully."
-                    : "The data will be sent to the company, make sure all of the submitted data is correct."}
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                {isLoading || clIsLoading ? (
-                  <Button variant={"outline"} className="w-24" disabled>
-                    <Spinner className="size-5" />
-                  </Button>
-                ) : isSuccess ? (
-                  <AlertDialogAction asChild>
-                    <Button onClick={handleOkSubmitted}>OK</Button>
-                  </AlertDialogAction>
-                ) : (
-                  <>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <Button type="submit" form="applyJob">
-                      Submit
-                    </Button>
-                  </>
-                )}
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <SubmitDataDialog
+            handleOkSubmitted={handleOkSubmitted}
+            isLoading={isLoading}
+            isSuccess={isSuccess}
+            clIsLoading={clIsLoading}
+          />
         </div>
       </div>
     </div>
