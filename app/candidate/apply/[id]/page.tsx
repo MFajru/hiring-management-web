@@ -64,6 +64,7 @@ const ApplyJob = () => {
     setIsSuccess,
   } = useFetch<TCandidate>();
   const {
+    data: jobPosting,
     fetchData: getJobPosting,
     isLoading: isLoadingJob,
     isSuccess: isSuccessJob,
@@ -151,6 +152,13 @@ const ApplyJob = () => {
       }));
     }
   }, [selectedDate]);
+
+  useEffect(() => {
+    getJobPosting(`${apiUrl}/jobPosting/${params.id}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+  }, [params.id]);
 
   return (
     <div className="w-screen h-screen bg-[#FAFAFA] flex items-center justify-center py-[50px]">
