@@ -18,10 +18,16 @@ import { da } from "date-fns/locale";
 type TDatePicker = {
   label: string;
   placeholder: string;
+  isMandatory?: boolean;
   setSelectedDate: Dispatch<SetStateAction<string>>;
 };
 
-const DatePicker = ({ label, placeholder, setSelectedDate }: TDatePicker) => {
+const DatePicker = ({
+  label,
+  placeholder,
+  setSelectedDate,
+  isMandatory,
+}: TDatePicker) => {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<Date | undefined>(undefined);
 
@@ -33,8 +39,9 @@ const DatePicker = ({ label, placeholder, setSelectedDate }: TDatePicker) => {
 
   return (
     <div className="flex flex-col gap-2 w-full">
-      <Label htmlFor="date" className="px-1 text-xs">
-        {label}
+      <Label htmlFor="date" className="px-1 text-xs flex">
+        <p>{label}</p>
+        <p className="text-red-500">{isMandatory ? "*" : ""}</p>
       </Label>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
