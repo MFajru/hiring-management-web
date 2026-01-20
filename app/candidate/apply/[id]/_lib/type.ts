@@ -7,3 +7,8 @@ export type TPhotoURL = {
   url: string;
   isSubmited: boolean;
 };
+
+export type TDialogMess = {
+  title: string;
+  body: string;
+};

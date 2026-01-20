@@ -11,12 +11,15 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { TDialogMess } from "../_lib/type";
 
 type TSubmitDataDialog = {
   handleOkSubmitted: () => void;
   isSuccess: boolean;
   isLoading: boolean;
   clIsLoading: boolean;
+  dialogMess: TDialogMess;
+  isSubmitError: boolean;
 };
 
 const SubmitDataDialog = ({
@@ -24,6 +27,8 @@ const SubmitDataDialog = ({
   isLoading,
   isSuccess,
   clIsLoading,
+  dialogMess,
+  isSubmitError,
 }: TSubmitDataDialog) => {
   return (
     <AlertDialog>
@@ -35,11 +40,11 @@ const SubmitDataDialog = ({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            {isSuccess ? "Data Submitted" : "Apply Job?"}
+            {dialogMess.title !== "" ? dialogMess.title : "Apply Job?"}
           </AlertDialogTitle>
           <AlertDialogDescription>
-            {isSuccess
-              ? "Data submitted successfully."
+            {dialogMess.body !== ""
+              ? dialogMess.body
               : "The data will be sent to the company, make sure all of the submitted data is correct."}
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -48,7 +53,7 @@ const SubmitDataDialog = ({
             <Button variant={"outline"} className="w-24" disabled>
               <Spinner className="size-5" />
             </Button>
-          ) : isSuccess ? (
+          ) : isSuccess || isSubmitError ? (
             <AlertDialogAction asChild>
               <Button onClick={handleOkSubmitted}>OK</Button>
             </AlertDialogAction>

@@ -31,7 +31,7 @@ import {
   cloudinaryPreset,
 } from "@/lib/environment";
 import TakePictureDialog from "./_components/take-picture-dialog";
-import { TPhotoURL } from "./_lib/type";
+import { TDialogMess, TPhotoURL } from "./_lib/type";
 import {
   FORMDATA_INIT,
   phoneCountryCodes,
@@ -55,7 +55,11 @@ const ApplyJob = () => {
   );
   const [clIsLoading, setClIsLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState<Partial<TCandidate>>(FORMDATA_INIT);
-  const [dialogMess, setDialogMess] = useState<string>("");
+  const [dialogMess, setDialogMess] = useState<TDialogMess>({
+    title: "",
+    body: "",
+  });
+  const [isSubmitError, setIsSubmitError] = useState<boolean>(false);
 
   const {
     fetchData: postData,
@@ -107,7 +111,11 @@ const ApplyJob = () => {
 
     if (photoUrl.url === "") {
       console.log("foto kosong");
-      setDialogMess("Profile picture is empty");
+      setDialogMess({
+        title: "Submit error",
+        body: "Profile picture is empty",
+      });
+      setIsSubmitError(true);
       return;
     }
 
@@ -126,8 +134,12 @@ const ApplyJob = () => {
     for (const key in Object.keys(finalData)) {
       const foundedEl = reqInfos.find((info) => info.slug === key);
       if (foundedEl && !foundedEl.isMustMandatory) {
-        setDialogMess("Some field still empty");
+        setDialogMess({
+          title: "Submit error",
+          body: "Some field still empty",
+        });
         console.log("gagal bang");
+        setIsSubmitError(true);
         return;
       }
     }
@@ -139,6 +151,11 @@ const ApplyJob = () => {
       },
       body: JSON.stringify(finalData),
     });
+    setDialogMess({
+      title: "Data Submitted!",
+      body: "Data has successfully submitted",
+    });
+    setIsSubmitError(false);
   };
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -156,6 +173,13 @@ const ApplyJob = () => {
     setSelectedDate("");
     setSelectedDom("");
     setSelectedPhoneCountry(phoneCountryCodes[0].code);
+    setTimeout(() => {
+      setDialogMess({
+        title: "",
+        body: "",
+      });
+      setIsSubmitError(false);
+    }, 100);
   };
 
   useEffect(() => {
@@ -374,6 +398,8 @@ const ApplyJob = () => {
               isLoading={isLoading}
               isSuccess={isSuccess}
               clIsLoading={clIsLoading}
+              dialogMess={dialogMess}
+              isSubmitError={isSubmitError}
             />
           </div>
         </div>
