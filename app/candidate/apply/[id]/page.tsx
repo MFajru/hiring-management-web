@@ -55,6 +55,8 @@ const ApplyJob = () => {
   );
   const [clIsLoading, setClIsLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState<Partial<TCandidate>>(FORMDATA_INIT);
+  const [formDataErr, setFormDataErr] =
+    useState<Partial<TCandidate>>(FORMDATA_INIT);
   const [dialogMess, setDialogMess] = useState<TDialogMess>({
     title: "",
     body: "",
@@ -109,47 +111,72 @@ const ApplyJob = () => {
   const handleSubmitForm = async (e: FormEvent) => {
     e.preventDefault();
 
+    const finalData: Partial<TCandidate> = {
+      ...formData,
+      domicile: selectedDom,
+      jobId: params.id,
+      phone: selectedPhoneCountry + formData.phone,
+    };
+
     if (photoUrl.url === "") {
       console.log("foto kosong");
       setDialogMess({
         title: "Submit error",
         body: "Profile picture is empty",
       });
-      setIsSubmitError(true);
-      return;
+      setFormDataErr((prev) => ({
+        ...prev,
+        photoProfile: "profile photo is empty",
+      }));
+      // return;
     }
 
-    const postImage = await cloudinaryUploadImage();
-
-    const finalData: Partial<TCandidate> = {
-      ...formData,
-      domicile: selectedDom,
-      photoProfile: postImage.secure_url,
-      jobId: params.id,
-      phone: selectedPhoneCountry + formData.phone,
-    };
-
     const reqInfos = (jobPosting as TJobList).requiredInfo;
-
-    for (const key in Object.keys(finalData)) {
+    for (const key of Object.keys(finalData)) {
+      if (key === "photoProfile") {
+        continue;
+      }
       const foundedEl = reqInfos.find((info) => info.slug === key);
-      if (foundedEl && !foundedEl.isMustMandatory) {
+      if (
+        foundedEl &&
+        foundedEl.isMustMandatory &&
+        finalData[key as keyof Partial<TCandidate>] === ""
+      ) {
+        console.log(key);
+
         setDialogMess({
           title: "Submit error",
           body: "Some field still empty",
         });
+        setFormDataErr((prev) => ({
+          ...prev,
+          [key]: `${key} is empty`,
+        }));
         console.log("gagal bang");
+        console.log(formDataErr);
         setIsSubmitError(true);
+      }
+    }
+
+    for (const key in Object.keys(formDataErr)) {
+      if (formDataErr[key as keyof Partial<TCandidate>] !== "") {
+        setIsSubmitError(true);
+
         return;
       }
     }
+
+    const postImage = await cloudinaryUploadImage();
 
     postData(`${apiUrl}/candidates`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(finalData),
+      body: JSON.stringify({
+        ...finalData,
+        photoProfile: postImage.secure_url,
+      }),
     });
     setDialogMess({
       title: "Data Submitted!",
@@ -173,6 +200,7 @@ const ApplyJob = () => {
     setSelectedDate("");
     setSelectedDom("");
     setSelectedPhoneCountry(phoneCountryCodes[0].code);
+    router.replace("/candidate");
     setTimeout(() => {
       setDialogMess({
         title: "",
@@ -232,7 +260,14 @@ const ApplyJob = () => {
             <div className="flex flex-col px-6 gap-4">
               <p className="text-xs font-bold text-red-500">*Required</p>
               <div className="flex flex-col gap-2">
-                <h5 className="font-bold text-xs capitalize">Photo profile</h5>
+                <h5 className="font-bold text-xs capitalize">
+                  Photo profile
+                  <span className="text-red-500">
+                    {(jobPosting as TJobList).requiredInfo[1].isMustMandatory
+                      ? "*"
+                      : ""}
+                  </span>
+                </h5>
                 <div>
                   <Image
                     src={
@@ -253,6 +288,7 @@ const ApplyJob = () => {
                 </div>
                 <TakePictureDialog
                   photoUrl={photoUrl}
+                  errorMsg={formDataErr.photoProfile}
                   setPhotoUrl={setPhotoUrl}
                   handleSubmitPhoto={handleSubmitPhoto}
                   isDialogOpen={isDialogOpen}
@@ -266,6 +302,7 @@ const ApplyJob = () => {
                 inputType="text"
                 label="Full name"
                 placeholder="Enter your full name"
+                errorMsg={formDataErr.fullName}
                 isMandatory={
                   (jobPosting as TJobList).requiredInfo[0].isMustMandatory
                 }
@@ -278,6 +315,7 @@ const ApplyJob = () => {
                 }
                 placeholder="Select date of birth"
                 setSelectedDate={setSelectedDate}
+                errorMsg={formDataErr.dob}
               />
               <div className="flex flex-col gap-2">
                 <Label className="text-xs flex" htmlFor="gender">
@@ -379,6 +417,7 @@ const ApplyJob = () => {
                 isMandatory={
                   (jobPosting as TJobList).requiredInfo[4].isMustMandatory
                 }
+                errorMsg={formDataErr.email}
                 onChange={handleOnChange}
               />
               <InputLabel

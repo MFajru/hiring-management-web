@@ -80,43 +80,51 @@
       "requiredInfo": [
         {
           "name": "Full Name",
+          "slug": "fullName",
           "reqStatus": "mandatory",
           "isMustMandatory": true
         },
         {
           "name": "Photo Profile",
+          "slug": "photoProfile",
           "reqStatus": "mandatory",
           "isMustMandatory": true
         },
         {
           "name": "Gender",
-          "reqStatus": "mandatory",
+          "slug": "gender",
+          "reqStatus": "optional",
           "isMustMandatory": false
         },
         {
           "name": "Domicile",
+          "slug": "domicile",
           "reqStatus": "mandatory",
           "isMustMandatory": false
         },
         {
           "name": "Email",
+          "slug": "email",
           "reqStatus": "mandatory",
           "isMustMandatory": true
         },
         {
           "name": "Phone Number",
+          "slug": "phoneNumber",
           "reqStatus": "mandatory",
           "isMustMandatory": false
         },
         {
           "name": "Linkedin Link",
-          "reqStatus": "mandatory",
+          "slug": "linkedinLink",
+          "reqStatus": "optional",
           "isMustMandatory": false
         },
         {
           "name": "Date of Birth",
+          "slug": "dob",
           "reqStatus": "mandatory",
-          "isMustMandatory": false
+          "isMustMandatory": true
         }
       ]
     },

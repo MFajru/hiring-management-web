@@ -29,6 +29,7 @@ type TGestures = {
 type TTakePictureDialog = {
   photoUrl: TPhotoURL;
   isDialogOpen: boolean;
+  errorMsg?: string;
   setIsDialogOpen: Dispatch<SetStateAction<boolean>>;
   setPhotoUrl: Dispatch<SetStateAction<TPhotoURL>>;
   handleSubmitPhoto: () => void;
@@ -39,6 +40,7 @@ const PHOTO_TIMER = 3;
 const TakePictureDialog = ({
   photoUrl,
   isDialogOpen,
+  errorMsg,
   setIsDialogOpen,
   setPhotoUrl,
   handleSubmitPhoto,
@@ -207,21 +209,27 @@ const TakePictureDialog = ({
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <canvas ref={canvasPhotoRef} id="canvasElement" className="hidden" />
       <DialogTrigger asChild>
-        <Button
-          id="takePicture"
-          name="takePicture"
-          variant="outline"
-          className="w-fit"
-          onClick={() => takeAPhoto()}
-        >
-          <div className="flex gap-1 justify-center items-center">
-            <Upload width={16} height={16} strokeWidth={3} />
-            <p className="text-sm font-bold">Take a picture</p>
-          </div>
-        </Button>
+        <div className="flex items-center gap-4">
+          <Button
+            id="takePicture"
+            name="takePicture"
+            variant="outline"
+            className={`w-fit ${errorMsg !== "" ? "border-red-500" : ""}`}
+            onClick={() => takeAPhoto()}
+          >
+            <div className="flex gap-1 justify-center items-center">
+              <Upload width={16} height={16} strokeWidth={3} />
+              <p className="text-sm font-bold">Take a picture</p>
+            </div>
+          </Button>
+          <p className="text-xs text-red-500">{errorMsg}</p>
+        </div>
       </DialogTrigger>
+
       <DialogContent className="sm:max-w-1/2">
-        <DialogDescription className="sr-only">
+        <DialogDescription
+          className={`sr-only ${errorMsg !== "" ? "text-red-500" : ""}`}
+        >
           Take a picture
         </DialogDescription>
         <DialogHeader>
