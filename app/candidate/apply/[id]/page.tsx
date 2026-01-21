@@ -182,6 +182,16 @@ const ApplyJob = () => {
     }, 100);
   };
 
+  const handleOkError = () => {
+    setTimeout(() => {
+      setDialogMess({
+        title: "",
+        body: "",
+      });
+      setIsSubmitError(false);
+    }, 100);
+  };
+
   useEffect(() => {
     if (selectedDate !== "") {
       setFormData((prev) => ({
@@ -395,6 +405,7 @@ const ApplyJob = () => {
           <div className="flex justify-center items-center border-t pt-6 px-10">
             <SubmitDataDialog
               handleOkSubmitted={handleOkSubmitted}
+              handleOkError={handleOkError}
               isLoading={isLoading}
               isSuccess={isSuccess}
               clIsLoading={clIsLoading}

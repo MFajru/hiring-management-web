@@ -15,6 +15,7 @@ import { TDialogMess } from "../_lib/type";
 
 type TSubmitDataDialog = {
   handleOkSubmitted: () => void;
+  handleOkError: () => void;
   isSuccess: boolean;
   isLoading: boolean;
   clIsLoading: boolean;
@@ -24,6 +25,7 @@ type TSubmitDataDialog = {
 
 const SubmitDataDialog = ({
   handleOkSubmitted,
+  handleOkError,
   isLoading,
   isSuccess,
   clIsLoading,
@@ -55,7 +57,11 @@ const SubmitDataDialog = ({
             </Button>
           ) : isSuccess || isSubmitError ? (
             <AlertDialogAction asChild>
-              <Button onClick={handleOkSubmitted}>OK</Button>
+              {isSubmitError ? (
+                <Button onClick={handleOkError}>OK</Button>
+              ) : (
+                <Button onClick={handleOkSubmitted}>OK</Button>
+              )}
             </AlertDialogAction>
           ) : (
             <>
