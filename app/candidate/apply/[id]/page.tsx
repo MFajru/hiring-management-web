@@ -115,7 +115,6 @@ const ApplyJob = () => {
       ...formData,
       domicile: selectedDom,
       jobId: params.id,
-      phone: selectedPhoneCountry + formData.phone,
     };
 
     if (photoUrl.url === "") {
@@ -127,6 +126,7 @@ const ApplyJob = () => {
       setFormDataErr((prev) => ({
         ...prev,
         photoProfile: "profile photo is empty",
+        phone: selectedPhoneCountry + formData.phone,
       }));
       // return;
     }
@@ -341,15 +341,26 @@ const ApplyJob = () => {
                 </RadioGroup>
               </div>
               <div className="flex flex-col gap-2">
-                <Label className="text-xs" htmlFor="domicile">
-                  <p>Domicile</p>
-                  <p className="text-red-500">
-                    {(jobPosting as TJobList).requiredInfo[3].isMustMandatory}
+                <div className="flex">
+                  <Label className="text-xs" htmlFor="domicile">
+                    <p>Domicile</p>
+                  </Label>
+                  <p className="text-red-500 text-xs">
+                    {(jobPosting as TJobList).requiredInfo[3].isMustMandatory
+                      ? "*"
+                      : ""}
                   </p>
-                </Label>
+                </div>
                 <Select value={selectedDom} onValueChange={setSelectedDom}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger
+                    className={`w-full relative ${
+                      formDataErr.domicile !== "" ? "border-red-500" : ""
+                    }`}
+                  >
                     <SelectValue placeholder="Choose your domicile" />
+                    <p className="text-red-500 text-xs absolute right-8">
+                      {formDataErr.domicile}
+                    </p>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
@@ -363,13 +374,22 @@ const ApplyJob = () => {
                 </Select>
               </div>
               <div className="flex flex-col gap-2 w-full">
-                <Label className="text-xs ">
-                  <p>Phone Number</p>
-                  <p className="text-red-500">
-                    {(jobPosting as TJobList).requiredInfo[5].isMustMandatory}
+                <div className="flex">
+                  <Label className="text-xs ">
+                    <p>Phone Number</p>
+                  </Label>
+                  <p className="text-red-500 text-xs">
+                    {(jobPosting as TJobList).requiredInfo[5].isMustMandatory
+                      ? "*"
+                      : ""}
                   </p>
-                </Label>
-                <InputGroup>
+                </div>
+
+                <InputGroup
+                  className={`${
+                    formDataErr.phone !== "" ? "border-red-500" : ""
+                  }`}
+                >
                   <InputGroupInput
                     type="text"
                     value={formData.phone}
@@ -405,6 +425,11 @@ const ApplyJob = () => {
                       +{selectedPhoneCountry}
                     </InputGroupText>
                   </InputGroupAddon>
+                  <InputGroupAddon align="inline-end">
+                    <InputGroupText className="text-red-500 text-xs">
+                      {formDataErr.phone}
+                    </InputGroupText>
+                  </InputGroupAddon>
                 </InputGroup>
               </div>
               <InputLabel
@@ -427,6 +452,7 @@ const ApplyJob = () => {
                 inputType="text"
                 label="Link linkedin"
                 placeholder="https://linkedin.com/in/username"
+                errorMsg={formDataErr.linkedin}
                 isMandatory={
                   (jobPosting as TJobList).requiredInfo[6].isMustMandatory
                 }

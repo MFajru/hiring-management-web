@@ -100,7 +100,7 @@
           "name": "Domicile",
           "slug": "domicile",
           "reqStatus": "mandatory",
-          "isMustMandatory": false
+          "isMustMandatory": true
         },
         {
           "name": "Email",
@@ -110,15 +110,15 @@
         },
         {
           "name": "Phone Number",
-          "slug": "phoneNumber",
+          "slug": "phone",
           "reqStatus": "mandatory",
-          "isMustMandatory": false
+          "isMustMandatory": true
         },
         {
           "name": "Linkedin Link",
-          "slug": "linkedinLink",
+          "slug": "linkedin",
           "reqStatus": "optional",
-          "isMustMandatory": false
+          "isMustMandatory": true
         },
         {
           "name": "Date of Birth",
@@ -171,13 +171,13 @@
         },
         {
           "name": "Phone Number",
-          "slug": "phoneNumber",
+          "slug": "phone",
           "reqStatus": "mandatory",
-          "isMustMandatory": false
+          "isMustMandatory": true
         },
         {
           "name": "Linkedin Link",
-          "slug": "linkedinLink",
+          "slug": "linkedin",
           "reqStatus": "optional",
           "isMustMandatory": false
         },

@@ -39,8 +39,8 @@ export type TErrorMsg = {
   maximumSalary: string;
   gender: string;
   domicile: string;
-  phoneNumber: string;
-  linkedinLink: string;
+  phone: string;
+  linkedin: string;
   dob: string;
 };
 

@@ -44,7 +44,7 @@ export type TFormJob = {
   dob: string;
   gender: string;
   domicile: string;
-  phoneNumber: string;
+  phone: string;
   email: string;
   linkedin: string;
 };

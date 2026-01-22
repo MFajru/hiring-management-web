@@ -1,4 +1,4 @@
-import { TJobList } from "../page";
+import { TJobList } from "@/types";
 
 export const startCreateJobValue: Partial<TJobList> = {
   jobName: "",
@@ -42,13 +42,13 @@ export const startCreateJobValue: Partial<TJobList> = {
     },
     {
       name: "Phone Number",
-      slug: "phoneNumber",
+      slug: "phone",
       reqStatus: "",
       isMustMandatory: false,
     },
     {
       name: "Linkedin Link",
-      slug: "linkedinLink",
+      slug: "linkedin",
       reqStatus: "",
       isMustMandatory: false,
     },
@@ -70,7 +70,7 @@ export const startErrorMsg = {
   maximumSalary: "",
   gender: "",
   domicile: "",
-  phoneNumber: "",
-  linkedinLink: "",
+  phone: "",
+  linkedin: "",
   dob: "",
 };
