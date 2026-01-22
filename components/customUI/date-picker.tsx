@@ -53,7 +53,7 @@ const DatePicker = ({
           <Button
             variant="outline"
             id="date"
-            className={`justify-between items-center font-normal w-full ${
+            className={`relative justify-between items-center font-normal w-full ${
               errorMsg !== "" ? "border-red-500" : ""
             }`}
           >
@@ -63,11 +63,11 @@ const DatePicker = ({
                 {date ? date.toLocaleDateString() : placeholder}
               </p>
             </div>
+            <p className="text-xs text-red-500 absolute right-8">{errorMsg}</p>
 
             <ChevronDownIcon color="#B9B9B9" />
           </Button>
         </PopoverTrigger>
-        <p className="text-xs text-red-500">{errorMsg}</p>
         <PopoverContent className="w-auto overflow-hidden p-0" align="start">
           <Calendar
             mode="single"
