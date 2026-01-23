@@ -44,8 +44,6 @@ const ApplyJob = () => {
 
   const router = useRouter();
 
-  const canvasPhotoRef = useRef<HTMLCanvasElement>(null);
-
   const [photoUrl, setPhotoUrl] = useState<TPhotoURL>(PHOTOURL_INIT);
   const [selectedDom, setSelectedDom] = useState<string>("");
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
@@ -70,18 +68,6 @@ const ApplyJob = () => {
     setIsSuccess,
   } = useFetch<TCandidate>();
   const { data: jobPosting, fetchData: getJobPosting } = useFetch<TJobList>();
-
-  const handleSubmitPhoto = () => {
-    setPhotoUrl((prev) => ({
-      ...prev,
-      isSubmited: true,
-    }));
-    setIsDialogOpen(false);
-    setFormData((prev) => ({
-      ...prev,
-      photoProfile: photoUrl.url,
-    }));
-  };
 
   const cloudinaryUploadImage = async () => {
     const clFormData = new FormData();
@@ -118,7 +104,6 @@ const ApplyJob = () => {
     };
 
     if (photoUrl.url === "") {
-      console.log("foto kosong");
       setDialogMess({
         title: "Submit error",
         body: "Profile picture is empty",
@@ -142,8 +127,6 @@ const ApplyJob = () => {
         foundedEl.isMustMandatory &&
         finalData[key as keyof Partial<TCandidate>] === ""
       ) {
-        console.log(key);
-
         setDialogMess({
           title: "Submit error",
           body: "Some field still empty",
@@ -153,7 +136,6 @@ const ApplyJob = () => {
           [key]: `${key} is empty`,
         }));
         console.log("gagal bang");
-        console.log(formDataErr);
         setIsSubmitError(true);
       }
     }
@@ -161,7 +143,6 @@ const ApplyJob = () => {
     for (const key in Object.keys(formDataErr)) {
       if (formDataErr[key as keyof Partial<TCandidate>] !== "") {
         setIsSubmitError(true);
-
         return;
       }
     }
@@ -186,9 +167,15 @@ const ApplyJob = () => {
   };
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const name = e.target.name;
+    console.log(name);
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: e.target.value,
+    }));
+    setFormDataErr((prev) => ({
+      ...prev,
+      [name]: "",
     }));
   };
 
@@ -227,6 +214,7 @@ const ApplyJob = () => {
         dob: selectedDate,
       }));
     }
+    setFormDataErr((prev) => ({ ...prev, dob: "" }));
   }, [selectedDate]);
 
   useEffect(() => {
@@ -289,8 +277,9 @@ const ApplyJob = () => {
                 <TakePictureDialog
                   photoUrl={photoUrl}
                   errorMsg={formDataErr.photoProfile}
+                  setErrorMsg={setFormDataErr}
+                  setFormData={setFormData}
                   setPhotoUrl={setPhotoUrl}
-                  handleSubmitPhoto={handleSubmitPhoto}
                   isDialogOpen={isDialogOpen}
                   setIsDialogOpen={setIsDialogOpen}
                 />
@@ -318,26 +307,46 @@ const ApplyJob = () => {
                 errorMsg={formDataErr.dob}
               />
               <div className="flex flex-col gap-2">
-                <Label className="text-xs flex" htmlFor="gender">
-                  <p>Pronoun (gender)</p>
-                  <p className="text-red-500">
-                    {(jobPosting as TJobList).requiredInfo[2].isMustMandatory}
+                <div className="flex">
+                  <Label className="text-xs flex" htmlFor="gender">
+                    <p>Pronoun (gender)</p>
+                  </Label>
+                  <p className="text-red-500 text-xs">
+                    {(jobPosting as TJobList).requiredInfo[2].isMustMandatory
+                      ? "*"
+                      : ""}
                   </p>
-                </Label>
+                </div>
+
                 <RadioGroup
                   name="gender"
-                  className="flex"
-                  value={formData.gender}
+                  className="flex relative"
+                  defaultValue={formData.gender}
                   onChange={handleOnChange}
                 >
                   <div className="flex items-center gap-2 ">
-                    <RadioGroupItem value="female" id="female" />
+                    <RadioGroupItem
+                      value="female"
+                      id="female"
+                      className={
+                        formDataErr.gender !== "" ? "border-red-500" : ""
+                      }
+                    />
                     <Label htmlFor="female">She/her (Female)</Label>
                   </div>
                   <div className="flex items-center gap-2">
-                    <RadioGroupItem value="male" id="male" />
+                    <RadioGroupItem
+                      value="male"
+                      id="male"
+                      className={
+                        formDataErr.gender !== "" ? "border-red-500" : ""
+                      }
+                    />
                     <Label htmlFor="male">He/him (Male)</Label>
                   </div>
+                  <p className="text-xs text-red-500 absolute right-5">
+                    {formDataErr.gender}
+                  </p>
                 </RadioGroup>
               </div>
               <div className="flex flex-col gap-2">
@@ -457,12 +466,6 @@ const ApplyJob = () => {
                   (jobPosting as TJobList).requiredInfo[6].isMustMandatory
                 }
                 onChange={handleOnChange}
-              />
-
-              <canvas
-                ref={canvasPhotoRef}
-                id="canvasElement"
-                className="hidden"
               />
             </div>
           </form>

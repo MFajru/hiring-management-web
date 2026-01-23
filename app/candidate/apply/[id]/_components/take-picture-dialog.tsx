@@ -19,6 +19,7 @@ import { Coords3D } from "@tensorflow-models/handpose/dist/pipeline";
 import { gestureGenerator } from "@/app/candidate/_lib/gestures";
 import Image from "next/image";
 import { TPhotoURL } from "../_lib/type";
+import { TCandidate } from "@/types";
 
 type TGestures = {
   numberOne: boolean;
@@ -29,10 +30,11 @@ type TGestures = {
 type TTakePictureDialog = {
   photoUrl: TPhotoURL;
   isDialogOpen: boolean;
-  errorMsg?: string;
+  errorMsg: string | undefined;
+  setErrorMsg: Dispatch<SetStateAction<Partial<TCandidate>>>;
+  setFormData: Dispatch<SetStateAction<Partial<TCandidate>>>;
   setIsDialogOpen: Dispatch<SetStateAction<boolean>>;
   setPhotoUrl: Dispatch<SetStateAction<TPhotoURL>>;
-  handleSubmitPhoto: () => void;
 };
 
 const PHOTO_TIMER = 3;
@@ -41,9 +43,10 @@ const TakePictureDialog = ({
   photoUrl,
   isDialogOpen,
   errorMsg,
+  setErrorMsg,
+  setFormData,
   setIsDialogOpen,
   setPhotoUrl,
-  handleSubmitPhoto,
 }: TTakePictureDialog) => {
   const gestures = gestureGenerator();
 
@@ -58,6 +61,22 @@ const TakePictureDialog = ({
     numberTwo: false,
     numberThree: false,
   });
+
+  const handleSubmitPhoto = () => {
+    setPhotoUrl((prev) => ({
+      ...prev,
+      isSubmited: true,
+    }));
+    setIsDialogOpen(false);
+    setFormData((prev) => ({
+      ...prev,
+      photoProfile: photoUrl.url,
+    }));
+    setErrorMsg((prev) => ({
+      ...prev,
+      photoProfile: "",
+    }));
+  };
 
   const capturePhoto = () => {
     if (canvasPhotoRef.current && videoRef.current) {
@@ -213,6 +232,7 @@ const TakePictureDialog = ({
           <Button
             id="takePicture"
             name="takePicture"
+            type="button"
             variant="outline"
             className={`w-fit ${errorMsg !== "" ? "border-red-500" : ""}`}
             onClick={() => takeAPhoto()}
@@ -350,7 +370,12 @@ const TakePictureDialog = ({
               >
                 Retake Photo
               </Button>
-              <Button type="button" onClick={handleSubmitPhoto}>
+              <Button
+                id="buttonPhoto"
+                name="buttonPhoto"
+                type="button"
+                onClick={handleSubmitPhoto}
+              >
                 Submit
               </Button>
             </div>

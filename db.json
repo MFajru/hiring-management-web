@@ -94,7 +94,7 @@
           "name": "Gender",
           "slug": "gender",
           "reqStatus": "optional",
-          "isMustMandatory": false
+          "isMustMandatory": true
         },
         {
           "name": "Domicile",
