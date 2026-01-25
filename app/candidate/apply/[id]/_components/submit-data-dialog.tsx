@@ -11,27 +11,74 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { TDialogMess } from "../_lib/type";
+import { TDialogMess, TPhotoURL } from "../_lib/type";
+import { Dispatch, SetStateAction } from "react";
+import { FORMDATA_INIT, PHOTOURL_INIT } from "../_lib/initVal";
+import { TCandidate } from "@/types";
+import { useRouter } from "next/navigation";
 
 type TSubmitDataDialog = {
-  handleOkSubmitted: () => void;
-  handleOkError: () => void;
   isSuccess: boolean;
   isLoading: boolean;
   clIsLoading: boolean;
   dialogMess: TDialogMess;
   isSubmitError: boolean;
+  setClIsLoading: Dispatch<SetStateAction<boolean>>;
+  setDialogMess: Dispatch<SetStateAction<TDialogMess>>;
+  setIsSubmitError: Dispatch<SetStateAction<boolean>>;
+  setFormData: Dispatch<SetStateAction<Partial<TCandidate>>>;
+  setPhotoUrl: Dispatch<SetStateAction<TPhotoURL>>;
+  setIsSuccess: Dispatch<SetStateAction<boolean>>;
+  setSelectedDate: Dispatch<SetStateAction<string>>;
+  setSelectedDom: Dispatch<SetStateAction<string>>;
+  setSelectedPhoneCountry: Dispatch<SetStateAction<string>>;
 };
 
 const SubmitDataDialog = ({
-  handleOkSubmitted,
-  handleOkError,
   isLoading,
   isSuccess,
   clIsLoading,
   dialogMess,
   isSubmitError,
+  setDialogMess,
+  setIsSubmitError,
+  setClIsLoading,
+  setFormData,
+  setPhotoUrl,
+  setIsSuccess,
+  setSelectedDate,
+  setSelectedDom,
+  setSelectedPhoneCountry,
 }: TSubmitDataDialog) => {
+  const router = useRouter();
+
+  const handleOkError = () => {
+    setTimeout(() => {
+      setDialogMess({
+        title: "",
+        body: "",
+      });
+      setIsSubmitError(false);
+    }, 100);
+  };
+
+  const handleOkSubmitted = () => {
+    setClIsLoading(false);
+    setFormData(FORMDATA_INIT);
+    setPhotoUrl(PHOTOURL_INIT);
+    setIsSuccess(false);
+    setSelectedDate("");
+    setSelectedDom("");
+    setSelectedPhoneCountry("62");
+    router.replace("/candidate");
+    setTimeout(() => {
+      setDialogMess({
+        title: "",
+        body: "",
+      });
+      setIsSubmitError(false);
+    }, 100);
+  };
   return (
     <AlertDialog>
       <AlertDialogTrigger className="w-full" type="button">

@@ -316,6 +316,18 @@
       "gender": "male",
       "linkedin": "gogo.com",
       "jobId": "2"
+    },
+    {
+      "id": "a0a3",
+      "photoProfile": "https://res.cloudinary.com/dgvshxgo4/image/upload/v1769310196/avatar-rakamin/zgiwbmzz7wivxel8luny.jpg",
+      "fullName": "w",
+      "email": "fajru234@gmail.com",
+      "phone": "6288888",
+      "dob": "2026-01-06T00:00:00+07:00",
+      "domicile": "lampung",
+      "gender": "female",
+      "linkedin": "g.com",
+      "jobId": "2"
     }
   ]
 }

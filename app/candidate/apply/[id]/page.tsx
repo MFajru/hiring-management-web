@@ -134,13 +134,12 @@ const ApplyJob = () => {
           ...prev,
           [key]: `${key} is empty`,
         }));
-        console.log("gagal bang");
         setIsSubmitError(true);
       }
     }
 
-    for (const key in Object.keys(formDataErr)) {
-      if (formDataErr[key as keyof Partial<TCandidate>] === "") {
+    for (const key of Object.keys(formDataErr)) {
+      if (formDataErr[key as keyof Partial<TCandidate>] !== "") {
         setIsSubmitError(true);
         return;
       }
@@ -168,7 +167,6 @@ const ApplyJob = () => {
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name;
-    console.log(name);
     setFormData((prev) => ({
       ...prev,
       [name]: e.target.value,
@@ -177,34 +175,6 @@ const ApplyJob = () => {
       ...prev,
       [name]: "",
     }));
-  };
-
-  const handleOkSubmitted = () => {
-    setClIsLoading(false);
-    setFormData(FORMDATA_INIT);
-    setPhotoUrl(PHOTOURL_INIT);
-    setIsSuccess(false);
-    setSelectedDate("");
-    setSelectedDom("");
-    setSelectedPhoneCountry(phoneCountryCodes[0].code);
-    router.replace("/candidate");
-    setTimeout(() => {
-      setDialogMess({
-        title: "",
-        body: "",
-      });
-      setIsSubmitError(false);
-    }, 100);
-  };
-
-  const handleOkError = () => {
-    setTimeout(() => {
-      setDialogMess({
-        title: "",
-        body: "",
-      });
-      setIsSubmitError(false);
-    }, 100);
   };
 
   useEffect(() => {
@@ -482,13 +452,20 @@ const ApplyJob = () => {
 
           <div className="flex justify-center items-center border-t pt-6 px-10">
             <SubmitDataDialog
-              handleOkSubmitted={handleOkSubmitted}
-              handleOkError={handleOkError}
               isLoading={isLoading}
               isSuccess={isSuccess}
               clIsLoading={clIsLoading}
               dialogMess={dialogMess}
               isSubmitError={isSubmitError}
+              setClIsLoading={setClIsLoading}
+              setDialogMess={setDialogMess}
+              setFormData={setFormData}
+              setIsSubmitError={setIsSubmitError}
+              setIsSuccess={setIsSuccess}
+              setPhotoUrl={setPhotoUrl}
+              setSelectedDate={setSelectedDate}
+              setSelectedDom={setSelectedDom}
+              setSelectedPhoneCountry={setSelectedPhoneCountry}
             />
           </div>
         </div>
