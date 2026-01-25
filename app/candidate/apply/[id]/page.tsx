@@ -99,7 +99,6 @@ const ApplyJob = () => {
 
     const finalData: Partial<TCandidate> = {
       ...formData,
-      domicile: selectedDom,
       jobId: params.id,
     };
 
@@ -141,7 +140,7 @@ const ApplyJob = () => {
     }
 
     for (const key in Object.keys(formDataErr)) {
-      if (formDataErr[key as keyof Partial<TCandidate>] !== "") {
+      if (formDataErr[key as keyof Partial<TCandidate>] === "") {
         setIsSubmitError(true);
         return;
       }
@@ -157,6 +156,7 @@ const ApplyJob = () => {
       body: JSON.stringify({
         ...finalData,
         photoProfile: postImage.secure_url,
+        phone: selectedPhoneCountry + formData.phone,
       }),
     });
     setDialogMess({
@@ -216,6 +216,16 @@ const ApplyJob = () => {
     }
     setFormDataErr((prev) => ({ ...prev, dob: "" }));
   }, [selectedDate]);
+
+  useEffect(() => {
+    if (selectedDom !== "") {
+      setFormData((prev) => ({
+        ...prev,
+        domicile: selectedDom,
+      }));
+    }
+    setFormDataErr((prev) => ({ ...prev, domicile: "" }));
+  }, [selectedDom]);
 
   useEffect(() => {
     getJobPosting(`${apiUrl}/jobPosting/${params.id}`, {

@@ -304,6 +304,18 @@
       "gender": "",
       "linkedin": "",
       "jobId": "1"
+    },
+    {
+      "id": "2bbb",
+      "photoProfile": "https://res.cloudinary.com/dgvshxgo4/image/upload/v1769307379/avatar-rakamin/azmqpjtrylkdusxumtvr.jpg",
+      "fullName": "gogo",
+      "email": "gogo@mail.com",
+      "phone": "87856728121",
+      "dob": "2000-01-05T00:00:00+07:00",
+      "domicile": "lampung",
+      "gender": "male",
+      "linkedin": "gogo.com",
+      "jobId": "2"
     }
   ]
 }
