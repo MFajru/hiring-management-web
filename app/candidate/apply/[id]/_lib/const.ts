@@ -39,3 +39,5 @@ export const phoneCountryCodes: TPhoneCountryCodes[] = [
     code: "966",
   },
 ];
+
+export const AGE_LIMIT_MS = 536482800000;

@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { TDialogMess, TPhotoURL } from "../_lib/type";
 import { Dispatch, SetStateAction } from "react";
-import { FORMDATA_INIT, PHOTOURL_INIT } from "../_lib/initVal";
+import { FORMDATA_INIT, PHOTOURL_INIT } from "../_lib/const";
 import { TCandidate } from "@/types";
 import { useRouter } from "next/navigation";
 

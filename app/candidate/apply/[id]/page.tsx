@@ -33,10 +33,11 @@ import {
 import TakePictureDialog from "./_components/take-picture-dialog";
 import { TDialogMess, TPhotoURL } from "./_lib/type";
 import {
+  AGE_LIMIT_MS,
   FORMDATA_INIT,
   phoneCountryCodes,
   PHOTOURL_INIT,
-} from "./_lib/initVal";
+} from "./_lib/const";
 import SubmitDataDialog from "./_components/submit-data-dialog";
 
 const ApplyJob = () => {
@@ -97,6 +98,8 @@ const ApplyJob = () => {
   const handleSubmitForm = async (e: FormEvent) => {
     e.preventDefault();
 
+    let isSubmitErr = false;
+
     const finalData: Partial<TCandidate> = {
       ...formData,
       jobId: params.id,
@@ -112,7 +115,6 @@ const ApplyJob = () => {
         photoProfile: "profile photo is empty",
         phone: selectedPhoneCountry + formData.phone,
       }));
-      // return;
     }
 
     const reqInfos = (jobPosting as TJobList).requiredInfo;
@@ -130,19 +132,21 @@ const ApplyJob = () => {
           title: "Submit error",
           body: "Some field still empty",
         });
-        setFormDataErr((prev) => ({
-          ...prev,
-          [key]: `${key} is empty`,
-        }));
-        setIsSubmitError(true);
+        if (formDataErr[key as keyof Partial<TCandidate>] === "") {
+          setFormDataErr((prev) => ({
+            ...prev,
+            [key]: `${key} is empty`,
+          }));
+        }
+        if (!isSubmitErr) {
+          isSubmitErr = true;
+          setIsSubmitError(isSubmitErr);
+        }
       }
     }
 
-    for (const key of Object.keys(formDataErr)) {
-      if (formDataErr[key as keyof Partial<TCandidate>] !== "") {
-        setIsSubmitError(true);
-        return;
-      }
+    if (isSubmitErr) {
+      return;
     }
 
     const postImage = await cloudinaryUploadImage();
@@ -178,13 +182,24 @@ const ApplyJob = () => {
   };
 
   useEffect(() => {
-    if (selectedDate !== "") {
+    const dateNow = new Date();
+    const dateSt = new Date(selectedDate);
+    const msDiff = dateNow.getTime() - dateSt.getTime();
+
+    if (msDiff < AGE_LIMIT_MS) {
+      setFormDataErr((prev) => ({
+        ...prev,
+        dob: "Age must be at least 17",
+      }));
+      return;
+    }
+    if (selectedDate !== "" && msDiff >= AGE_LIMIT_MS) {
       setFormData((prev) => ({
         ...prev,
         dob: selectedDate,
       }));
+      setFormDataErr((prev) => ({ ...prev, dob: "" }));
     }
-    setFormDataErr((prev) => ({ ...prev, dob: "" }));
   }, [selectedDate]);
 
   useEffect(() => {
