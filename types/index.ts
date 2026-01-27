@@ -4,7 +4,7 @@ export interface IBreadcrumb {
 }
 
 export type TCandidate = {
-  id: number;
+  id: string;
   fullName: string;
   photoProfile: string;
   email: string;

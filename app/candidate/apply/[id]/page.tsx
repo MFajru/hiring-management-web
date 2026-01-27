@@ -2,7 +2,7 @@
 
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
-import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import InputLabel from "@/components/customUI/input-with-label";
 import DatePicker from "@/components/customUI/date-picker";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -99,6 +99,7 @@ const ApplyJob = () => {
     e.preventDefault();
 
     let isSubmitErr = false;
+    const tempErr: Partial<TCandidate> = formDataErr;
 
     const finalData: Partial<TCandidate> = {
       ...formData,
@@ -113,8 +114,8 @@ const ApplyJob = () => {
       setFormDataErr((prev) => ({
         ...prev,
         photoProfile: "profile photo is empty",
-        phone: selectedPhoneCountry + formData.phone,
       }));
+      isSubmitErr = true;
     }
 
     const reqInfos = (jobPosting as TJobList).requiredInfo;
@@ -126,26 +127,25 @@ const ApplyJob = () => {
       if (
         foundedEl &&
         foundedEl.isMustMandatory &&
-        finalData[key as keyof Partial<TCandidate>] === ""
+        finalData[key as keyof Partial<TCandidate>] === "" &&
+        formDataErr[key as keyof Partial<TCandidate>] === ""
       ) {
-        setDialogMess({
-          title: "Submit error",
-          body: "Some field still empty",
-        });
-        if (formDataErr[key as keyof Partial<TCandidate>] === "") {
-          setFormDataErr((prev) => ({
-            ...prev,
-            [key]: `${key} is empty`,
-          }));
-        }
-        if (!isSubmitErr) {
-          isSubmitErr = true;
-          setIsSubmitError(isSubmitErr);
-        }
+        tempErr[key as keyof Partial<TCandidate>] = `${key} is empty`;
+      }
+
+      if (tempErr[key as keyof Partial<TCandidate>] !== "") {
+        console.log("object");
+        isSubmitErr = true;
       }
     }
 
     if (isSubmitErr) {
+      setFormDataErr(tempErr);
+      setIsSubmitError(isSubmitErr);
+      setDialogMess({
+        title: "Submit error",
+        body: "Some field still has error",
+      });
       return;
     }
 
