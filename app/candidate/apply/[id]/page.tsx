@@ -300,6 +300,7 @@ const ApplyJob = () => {
                 placeholder="Select date of birth"
                 setSelectedDate={setSelectedDate}
                 errorMsg={formDataErr.dob}
+                disabled={{ after: new Date() }}
               />
               <div className="flex flex-col gap-2">
                 <div className="flex">

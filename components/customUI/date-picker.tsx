@@ -14,10 +14,12 @@ import { Calendar } from "../ui/calendar";
 import moment from "moment";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { da } from "date-fns/locale";
+import { Matcher } from "react-day-picker";
 
 type TDatePicker = {
   label: string;
   placeholder: string;
+  disabled?: Matcher | Matcher[];
   isMandatory?: boolean;
   errorMsg?: string;
   setSelectedDate: Dispatch<SetStateAction<string>>;
@@ -29,6 +31,7 @@ const DatePicker = ({
   setSelectedDate,
   isMandatory,
   errorMsg,
+  disabled,
 }: TDatePicker) => {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<Date | undefined>(undefined);
@@ -70,6 +73,7 @@ const DatePicker = ({
         </PopoverTrigger>
         <PopoverContent className="w-auto overflow-hidden p-0" align="start">
           <Calendar
+            disabled={disabled}
             mode="single"
             selected={date}
             captionLayout="dropdown"
