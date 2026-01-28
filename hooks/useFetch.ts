@@ -5,7 +5,7 @@ interface UseFetchResponse<T> {
   isLoading: boolean;
   isSuccess: boolean;
   error: string | unknown;
-  fetchData: (url: string, options: RequestInit | undefined) => Promise<void>;
+  fetchData: (url: string, options: RequestInit | undefined) => Promise<T>;
   setData: React.Dispatch<React.SetStateAction<T | string | null>>;
   setError: React.Dispatch<React.SetStateAction<Error | null>>;
   setErrorMsg: React.Dispatch<
@@ -31,12 +31,13 @@ export const useFetch = <T>(): UseFetchResponse<T> => {
         setErrorMsg(data.error);
         throw new Error(
           `Failed to fetch data: ${response.status} ${response.statusText};
-        }`
+        }`,
         );
       }
       setError("no error" as unknown as Error);
       setData(data);
       setIsSuccess(true);
+      return data;
     } catch (error) {
       setIsSuccess(false);
       if (error instanceof SyntaxError) {

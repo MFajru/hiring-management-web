@@ -16,11 +16,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { useFetch } from "@/hooks/useFetch";
 import { redirect } from "next/navigation";
 import InputLabel from "@/components/customUI/input-with-label";
 import { apiUrl } from "@/lib/environment";
+import { toast } from "sonner";
 
 interface ICredentials {
   email: string;
@@ -31,6 +32,7 @@ interface IGetCredentials {
   id: string;
   email: string;
   password: string;
+  role: string;
 }
 
 const LoginPassword = () => {
@@ -39,7 +41,7 @@ const LoginPassword = () => {
     email: "",
     password: "",
   });
-  const { data, fetchData: getData } = useFetch<IGetCredentials>();
+  const { fetchData: getData } = useFetch<IGetCredentials[]>();
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -49,21 +51,29 @@ const LoginPassword = () => {
     }));
   };
 
-  const handleLogin = () => {
-    getData(`${apiUrl}/auth/1`, {
+  const handleLogin = async (e: FormEvent) => {
+    e.preventDefault();
+
+    const res = await getData(`${apiUrl}/auth/?email=${credentials.email}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
-
-    if (data) {
-      const dt = data as IGetCredentials;
+    const user = res[0];
+    if (user) {
       if (
-        credentials.email === dt.email &&
-        credentials.password === dt.password
+        credentials.email !== user.email &&
+        credentials.password !== user.password
       ) {
+        toast.error("Login Failed! Wrong credentials.");
+        return;
+      }
+
+      toast.success("Login success!");
+
+      if (user.role === "admin") {
         redirect("/admin");
-      } else {
-        console.log("salah ges");
+      } else if (user.role === "candidate") {
+        redirect("/candidate");
       }
     }
   };
@@ -79,54 +89,63 @@ const LoginPassword = () => {
           </Link>
         </p>
       </div>
-      <InputLabel
-        inputId="email"
-        inputType="email"
-        label="Alamat email"
-        value={credentials.email}
-        onChange={handleOnChange}
-      />
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="password" className="font-normal text-xs">
-          Kata sandi
-        </Label>
-        <InputGroup>
-          <InputGroupInput
-            id="password"
-            name="password"
-            type={isPassShowed ? "text" : "password"}
-            className="pl-3!"
-            value={credentials.password}
-            onChange={handleOnChange}
-          />
-          <InputGroupAddon align="inline-end">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <InputGroupButton
-                  className="rounded-full hover:cursor-pointer"
-                  size="icon-xs"
-                  onClick={() => setIsPassShowed(!isPassShowed)}
-                >
-                  {isPassShowed ? <EyeIcon /> : <EyeOff />}
-                </InputGroupButton>
-              </TooltipTrigger>
-              <TooltipContent>Tampilkan sandi</TooltipContent>
-            </Tooltip>
-          </InputGroupAddon>
-        </InputGroup>
-      </div>
-      <div className="flex justify-end w-full">
-        <Link href={""} className="text-blue-400 text-sm">
-          Lupa kata sandi?
-        </Link>
-      </div>
-      <Button
-        variant={"secondary"}
-        className="text-black w-full"
-        onClick={() => handleLogin()}
+      <form
+        name="login"
+        id="login"
+        onSubmit={handleLogin}
+        className="flex flex-col gap-2"
       >
-        Masuk
-      </Button>
+        <InputLabel
+          inputId="email"
+          inputType="email"
+          label="Alamat email"
+          value={credentials.email}
+          onChange={handleOnChange}
+        />
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="password" className="font-normal text-xs">
+            Kata sandi
+          </Label>
+          <InputGroup>
+            <InputGroupInput
+              id="password"
+              name="password"
+              type={isPassShowed ? "text" : "password"}
+              className="pl-3!"
+              value={credentials.password}
+              onChange={handleOnChange}
+            />
+            <InputGroupAddon align="inline-end">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <InputGroupButton
+                    className="rounded-full hover:cursor-pointer"
+                    size="icon-xs"
+                    onClick={() => setIsPassShowed(!isPassShowed)}
+                  >
+                    {isPassShowed ? <EyeIcon /> : <EyeOff />}
+                  </InputGroupButton>
+                </TooltipTrigger>
+                <TooltipContent>Tampilkan sandi</TooltipContent>
+              </Tooltip>
+            </InputGroupAddon>
+          </InputGroup>
+        </div>
+        <div className="flex justify-end w-full">
+          <Link href={""} className="text-blue-400 text-sm">
+            Lupa kata sandi?
+          </Link>
+        </div>
+        <Button
+          form="login"
+          variant={"secondary"}
+          type="submit"
+          className="text-black w-full"
+        >
+          Masuk
+        </Button>
+      </form>
+
       <div className="flex w-full justify-center items-center gap-2 ">
         <hr className="w-full border" />
         <p className="text-xs text-gray-400">or</p>
@@ -134,14 +153,14 @@ const LoginPassword = () => {
       </div>
       <div className="flex flex-col gap-4">
         <Link href="/login" className="w-full">
-          <Button variant="outline" className="font-bold w-full">
+          <Button variant="outline" className="font-bold w-full" type="button">
             <div className="flex gap-2.5 items-center">
               <Mail strokeWidth={3} />
               <p>Kirim link login melalui email</p>
             </div>
           </Button>
         </Link>
-        <Button variant="outline" className="font-bold">
+        <Button variant="outline" className="font-bold" type="button">
           <div className="flex gap-2.5 items-center">
             <Image
               src="/google.png"
