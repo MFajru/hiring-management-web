@@ -10,6 +10,7 @@ import {
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
+  InputGroupText,
 } from "@/components/ui/input-group";
 import {
   Tooltip,
@@ -41,6 +42,10 @@ const LoginPassword = () => {
     email: "",
     password: "",
   });
+  const [credErrors, setCredErrors] = useState<ICredentials>({
+    email: "",
+    password: "",
+  });
   const { fetchData: getData } = useFetch<IGetCredentials[]>();
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -49,10 +54,27 @@ const LoginPassword = () => {
       ...prevCredentials,
       [name]: value,
     }));
+    setCredErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
   };
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
+
+    let isSubmitErr = false;
+
+    for (const key of Object.keys(credentials)) {
+      if (credentials[key as keyof ICredentials] === "") {
+        setCredErrors((prev) => ({ ...prev, [key]: `${key} is empty` }));
+        isSubmitErr = true;
+      }
+    }
+
+    if (isSubmitErr) {
+      return;
+    }
 
     const res = await getData(`${apiUrl}/auth/?email=${credentials.email}`, {
       method: "GET",
@@ -99,6 +121,7 @@ const LoginPassword = () => {
           inputId="email"
           inputType="email"
           label="Alamat email"
+          errorMsg={credErrors.email}
           value={credentials.email}
           onChange={handleOnChange}
         />
@@ -106,7 +129,9 @@ const LoginPassword = () => {
           <Label htmlFor="password" className="font-normal text-xs">
             Kata sandi
           </Label>
-          <InputGroup>
+          <InputGroup
+            className={credErrors.password !== "" ? "border-red-500" : ""}
+          >
             <InputGroupInput
               id="password"
               name="password"
@@ -116,6 +141,9 @@ const LoginPassword = () => {
               onChange={handleOnChange}
             />
             <InputGroupAddon align="inline-end">
+              <InputGroupText className="text-red-500 text-xs">
+                {credErrors.password}
+              </InputGroupText>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <InputGroupButton
